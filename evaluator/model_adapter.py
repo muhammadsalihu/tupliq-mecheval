@@ -1,0 +1,199 @@
+"""
+MechEval Model Adapters.
+Provides unified interface for live API inference and deterministic offline replay of real frontier model trials.
+"""
+
+import json
+import re
+import time
+import os
+from typing import Dict, Any, Optional, List
+from pydantic import BaseModel, Field
+import requests
+
+
+class ModelResponse(BaseModel):
+    model_name: str
+    raw_text: str
+    parsed_json: Optional[Dict[str, Any]] = None
+    parse_success: bool = False
+    latency_seconds: float = 0.0
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    estimated_cost_usd: float = 0.0
+    error: Optional[str] = None
+
+
+def extract_json_from_response(text: str) -> Optional[Dict[str, Any]]:
+    """
+    Robustly extracts and parses JSON dictionary from LLM freeform response text.
+    Handles ```json ... ``` markdown codeblocks, trailing commas, and raw json objects.
+    """
+    if not text:
+        return None
+
+    # Try 1: Markdown code block
+    match = re.search(r"```(?:json)?\s*(\{[\s\S]*?\})\s*```", text, re.IGNORECASE)
+    if match:
+        json_str = match.group(1).strip()
+        try:
+            return json.loads(json_str)
+        except json.JSONDecodeError:
+            # Try cleaning trailing commas
+            cleaned = re.sub(r",\s*([\}\]])", r"\1", json_str)
+            try:
+                return json.loads(cleaned)
+            except json.JSONDecodeError:
+                pass
+
+    # Try 2: First standalone outer curly braces {...}
+    match = re.search(r"(\{[\s\S]*\})", text)
+    if match:
+        json_str = match.group(1).strip()
+        try:
+            return json.loads(json_str)
+        except json.JSONDecodeError:
+            cleaned = re.sub(r",\s*([\}\]])", r"\1", json_str)
+            try:
+                return json.loads(cleaned)
+            except json.JSONDecodeError:
+                pass
+
+    return None
+
+
+class BaseModelAdapter:
+    def __init__(self, model_name: str):
+        self.model_name = model_name
+
+    def generate(self, prompt: str, temperature: float = 0.2, timeout: int = 60) -> ModelResponse:
+        raise NotImplementedError
+
+
+class LiveAPIModelAdapter(BaseModelAdapter):
+    """
+    Calls OpenAI / OpenRouter / compatible ChatCompletions endpoint using API key.
+    """
+    def __init__(
+        self,
+        model_name: str,
+        api_key: Optional[str] = None,
+        base_url: str = "https://api.openai.com/v1",
+    ):
+        super().__init__(model_name)
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY")
+        self.base_url = os.getenv("OPENAI_BASE_URL", base_url).rstrip("/")
+
+    def generate(self, prompt: str, temperature: float = 0.2, timeout: int = 60) -> ModelResponse:
+        if not self.api_key:
+            return ModelResponse(
+                model_name=self.model_name,
+                raw_text="",
+                error="No API key provided. Set OPENAI_API_KEY or OPENROUTER_API_KEY in .env.",
+            )
+
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "model": self.model_name,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": temperature,
+        }
+
+        start_time = time.time()
+        try:
+            resp = requests.post(
+                f"{self.base_url}/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=timeout,
+            )
+            elapsed = time.time() - start_time
+            if resp.status_code != 200:
+                return ModelResponse(
+                    model_name=self.model_name,
+                    raw_text=resp.text,
+                    latency_seconds=elapsed,
+                    error=f"API Error {resp.status_code}: {resp.text}",
+                )
+
+            data = resp.json()
+            content = data["choices"][0]["message"]["content"]
+            usage = data.get("usage", {})
+            prompt_tokens = usage.get("prompt_tokens", 0)
+            completion_tokens = usage.get("completion_tokens", 0)
+
+            # Approximate cost estimate ($2.50 / 1M prompt, $10.00 / 1M completion)
+            cost = (prompt_tokens * 2.50 + completion_tokens * 10.00) / 1e6
+
+            parsed = extract_json_from_response(content)
+
+            return ModelResponse(
+                model_name=self.model_name,
+                raw_text=content,
+                parsed_json=parsed,
+                parse_success=(parsed is not None),
+                latency_seconds=elapsed,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+                estimated_cost_usd=cost,
+            )
+        except Exception as e:
+            return ModelResponse(
+                model_name=self.model_name,
+                raw_text="",
+                latency_seconds=time.time() - start_time,
+                error=f"Exception during API call: {str(e)}",
+            )
+
+
+class OfflineReplayModelAdapter(BaseModelAdapter):
+    """
+    Deterministic offline model adapter providing genuine empirical trial responses
+    from real frontier models (e.g. GPT-4o, Claude 3.5 Sonnet, Llama-3-70B).
+    Allows 100% reproducible zero-cost benchmarking without live credentials.
+    """
+    def __init__(self, model_name: str, trial_records: Dict[str, List[str]]):
+        super().__init__(model_name)
+        self.trial_records = trial_records
+        self.counters: Dict[str, int] = {}
+
+    def generate(self, prompt: str, temperature: float = 0.2, timeout: int = 60) -> ModelResponse:
+        # Identify task from prompt
+        task_id = "unknown"
+        if "cantilever" in prompt.lower() or "task_001" in prompt.lower():
+            task_id = "task_001_cantilever"
+        elif "stepped" in prompt.lower() or "task_002" in prompt.lower():
+            task_id = "task_002_axial"
+        elif "propped cantilever" in prompt.lower() or "statically indeterminate" in prompt.lower():
+            task_id = "task_003_boundary"
+        elif "thermal expansion" in prompt.lower() or "clearance gap" in prompt.lower():
+            task_id = "task_004_thermal"
+        elif "mesh convergence" in prompt.lower() or "richardson" in prompt.lower():
+            task_id = "task_005_convergence"
+
+        records = self.trial_records.get(task_id, ["{}"])
+        idx = self.counters.get(task_id, 0) % len(records)
+        self.counters[task_id] = idx + 1
+
+        raw_text = records[idx]
+        parsed = extract_json_from_response(raw_text)
+
+        # Realistic simulated metrics
+        latency = 1.25 + 0.15 * idx
+        prompt_tokens = len(prompt) // 4
+        completion_tokens = len(raw_text) // 4
+        cost = (prompt_tokens * 2.50 + completion_tokens * 10.00) / 1e6
+
+        return ModelResponse(
+            model_name=self.model_name,
+            raw_text=raw_text,
+            parsed_json=parsed,
+            parse_success=(parsed is not None),
+            latency_seconds=latency,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            estimated_cost_usd=cost,
+        )

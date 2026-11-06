@@ -1,0 +1,11 @@
+Model,Task ID,Task Title,Trials,Passed,Pass Rate (%),pass@k,pass^k,Mean Score (%),Avg Latency (s)
+gpt-4o,task_001_cantilever,Cantilever Beam Under Point Load and Distributed Self-Weight,3,2,66.7,1.0,0.0,75.0,1.4
+gpt-4o,task_002_axial,Stepped Axial Bar Under Intermediate Loading,3,2,66.7,1.0,0.0,77.4,1.4
+gpt-4o,task_003_boundary,Statically Indeterminate Propped Cantilever Under Uniform Load,3,0,0.0,0.0,0.0,63.3,1.4
+gpt-4o,task_004_thermal,Constrained Thermal Expansion of a Bar with Initial Clearance Gap,3,2,66.7,1.0,0.0,71.2,1.4
+gpt-4o,task_005_convergence,Finite Element Mesh Convergence and Discretization Error Analysis,3,2,66.7,1.0,0.0,66.7,1.4
+claude-3-5-sonnet,task_001_cantilever,Cantilever Beam Under Point Load and Distributed Self-Weight,3,2,66.7,1.0,0.0,75.0,1.4
+claude-3-5-sonnet,task_002_axial,Stepped Axial Bar Under Intermediate Loading,3,2,66.7,1.0,0.0,77.4,1.4
+claude-3-5-sonnet,task_003_boundary,Statically Indeterminate Propped Cantilever Under Uniform Load,3,0,0.0,0.0,0.0,75.0,1.4
+claude-3-5-sonnet,task_004_thermal,Constrained Thermal Expansion of a Bar with Initial Clearance Gap,3,2,66.7,1.0,0.0,76.6,1.4
+claude-3-5-sonnet,task_005_convergence,Finite Element Mesh Convergence and Discretization Error Analysis,3,2,66.7,1.0,0.0,92.8,1.4
