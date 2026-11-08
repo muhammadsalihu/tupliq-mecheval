@@ -7,7 +7,7 @@ import os
 import zipfile
 
 def package_submission(source_dir: str, zip_path: str):
-    ignore_dirs = {".venv", ".git", "__pycache__", ".pytest_cache"}
+    ignore_dirs = {".venv", ".git", "__pycache__", ".pytest_cache", "video_temp"}
     ignore_exts = {".pyc", ".pyo", ".log"}
 
     total_files = 0
