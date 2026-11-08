@@ -402,55 +402,43 @@ def create_slide_7() -> str:
 NARRATIONS = [
     (
         "slide_1",
-        "Welcome to MechEval, a reproducible AI evaluation benchmark designed for the micro one Eval Hackathon. "
-        "As autonomous AI agents enter real-world software and engineering workflows, assessing their physical reasoning is vital. "
-        "In mechanical and structural engineering, a calculation that looks plausible but violates equilibrium or boundary conditions "
-        "can cause catastrophic structural failure. MechEval was built to answer a critical question: "
-        "Can frontier AI models reliably solve professional mechanical engineering problems, or do they produce convincing but physically impossible solutions?"
+        "MechEval is a code-graded AI evaluation benchmark built for the micro1 Eval Hackathon. "
+        "It answers one question: can frontier AI models solve real mechanical engineering problems, "
+        "or do they produce convincing but physically impossible solutions?"
     ),
     (
         "slide_2",
-        "MechEval evaluates models across five fundamental mechanics challenges. "
-        "These are not toy puzzles; they represent everyday professional challenges in structural design, elasticity, thermo-mechanics, "
-        "and computational simulation verification. Every task features a closed-form analytical ground truth derived symbolically with SymPy "
+        "Five tasks span beam bending, axial loading, indeterminate structures, thermal contact, "
+        "and finite element verification. Every ground truth is derived symbolically with SymPy "
         "and cross-checked against independent finite element simulations."
     ),
     (
         "slide_3",
-        "Let us examine Task three: A statically indeterminate propped cantilever beam. "
-        "The beam is rigidly clamped at wall A and supported by a roller at tip B under a uniform load w. "
-        "Because there are three unknown reactions but only two equations of static equilibrium, this problem cannot be solved using statics alone. "
-        "An engineer must enforce kinematic deformation compatibility: the downward deflection from the uniform load must be balanced by the upward reaction of the roller. "
-        "This yields the exact reactions: eighteen kilonewtons at the roller, thirty kilonewtons at the wall, and a clamping moment of twenty-four kilonewton meters."
+        "Task three is the killer: a statically indeterminate propped cantilever. Statics alone cannot solve it. "
+        "You must enforce deformation compatibility, giving reactions of eighteen and thirty kilonewtons "
+        "and a clamping moment of twenty-four kilonewton meters."
     ),
     (
         "slide_4",
-        "Now, what happens when frontier AI models attempt this task? "
-        "Across multiple trials, both GPT-4o and Claude 3.5 Sonnet failed one hundred percent of attempts. "
-        "As shown in this genuine transcript from GPT-4o, the model asserted: By symmetry of support load sharing, R A equals twenty-four thousand Newtons, and R B equals twenty-four thousand Newtons. "
-        "The model completely missed the statical indeterminacy, hallucinating symmetric fifty-fifty reactions. "
-        "In real-world structural engineering, under-designing the fixed root by twenty percent would cause joint shearing and collapse."
+        "Both GPT-4o and Claude 3.5 Sonnet failed every attempt. GPT-4o hallucinated symmetric fifty-fifty reactions, "
+        "missing the indeterminacy entirely. In real engineering, under-designing the fixed support by twenty percent "
+        "risks joint shearing and collapse."
     ),
     (
         "slide_5",
-        "To grade solutions objectively, MechEval implements deterministic, code-based graders. "
-        "We grade final physical outcomes within a strict one percent relative tolerance, not the intermediate steps. "
-        "In accordance with hackathon criteria, every grader was validated against thirty-three automated Pytest cases. "
-        "The graders accept verified reference solutions with one hundred percent accuracy while deterministically rejecting deliberate engineering failure modes "
-        "such as omitted dead load, rigid stop penetration, and incorrect boundary formulas."
+        "Grading is deterministic: code checks final physical results within a one percent relative tolerance, "
+        "validated by thirty-three automated Pytest cases. No false passes, no false fails."
     ),
     (
         "slide_6",
-        "Here are the empirical results from thirty independent trials across GPT-4o and Claude 3.5 Sonnet. "
-        "While both models achieved an apparent pass-at-three of eighty percent, meaning they succeeded at least once across three attempts on most tasks, "
-        "their pass-cubed was exactly zero percent! Neither model could solve all five tasks consistently. "
-        "Furthermore, on Task three, neither model passed a single trial."
+        "Results from thirty independent trials: pass-at-three of eighty percent, but pass-cubed — perfect consistency — exactly zero percent. "
+        "On task three, neither model passed a single trial."
     ),
     (
         "slide_7",
-        "MechEval demonstrates that while frontier models excel at reciting engineering equations, they struggle with holistic physical constraint satisfaction and kinematic boundary conditions. "
-        "Today's AI models cannot be safely deployed for autonomous engineering calculations without deterministic verification harnesses like MechEval to check their outputs against governing physical laws. "
-        "The complete codebase, test suite, and transcripts are open source and fully reproducible in seconds. Thank you."
+        "MechEval shows that frontier models can recite engineering equations but cannot satisfy physical constraints. "
+        "AI needs verification harnesses like this before autonomous engineering use. "
+        "Everything is open source and fully reproducible. Thank you."
     ),
 ]
 
@@ -465,7 +453,7 @@ def generate_audio(slide_id: str, text: str) -> str:
         f"Add-Type -AssemblyName System.Speech; "
         f"$synth = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
         f"$synth.SelectVoiceByHints([System.Speech.Synthesis.VoiceGender]::Male); "
-        f"$synth.Rate = 0; "
+        f"$synth.Rate = 2; "
         f"$synth.SetOutputToWaveFile('{audio_path}'); "
         f"$synth.Speak('{clean_text}'); "
         f"$synth.Dispose();"
@@ -493,6 +481,7 @@ def render_scene_video(image_path: str, audio_path: str, duration: float, output
         "-framerate", "1",
         "-i", image_path,
         "-i", audio_path,
+        "-t", f"{duration:.3f}",
         "-c:v", "libx264",
         "-tune", "stillimage",
         "-c:a", "aac",
