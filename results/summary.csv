@@ -1,0 +1,21 @@
+Model,Task ID,Task Title,Trials,Passed,Pass Rate (%),pass@k,pass^k,Mean Score (%),Avg Latency (s)
+openai/gpt-6-luna,task_001_cantilever,Cantilever Beam Under Point Load and Distributed Self-Weight,3,3,100.0,1.0,1.0,100.0,10.8
+openai/gpt-6-luna,task_002_axial,Stepped Axial Bar Under Intermediate Loading,3,3,100.0,1.0,1.0,100.0,10.45
+openai/gpt-6-luna,task_003_boundary,Statically Indeterminate Propped Cantilever Under Uniform Load,3,0,0.0,0.0,0.0,83.3,16.02
+openai/gpt-6-luna,task_004_thermal,Constrained Thermal Expansion of a Bar with Initial Clearance Gap,3,0,0.0,0.0,0.0,20.3,4.97
+openai/gpt-6-luna,task_005_convergence,Finite Element Mesh Convergence and Discretization Error Analysis,3,3,100.0,1.0,1.0,100.0,3.81
+deepseek/deepseek-v4.1-flash,task_001_cantilever,Cantilever Beam Under Point Load and Distributed Self-Weight,3,3,100.0,1.0,1.0,100.0,96.66
+deepseek/deepseek-v4.1-flash,task_002_axial,Stepped Axial Bar Under Intermediate Loading,3,3,100.0,1.0,1.0,100.0,83.41
+deepseek/deepseek-v4.1-flash,task_003_boundary,Statically Indeterminate Propped Cantilever Under Uniform Load,3,0,0.0,0.0,0.0,90.0,88.0
+deepseek/deepseek-v4.1-flash,task_004_thermal,Constrained Thermal Expansion of a Bar with Initial Clearance Gap,3,0,0.0,0.0,0.0,20.3,21.71
+deepseek/deepseek-v4.1-flash,task_005_convergence,Finite Element Mesh Convergence and Discretization Error Analysis,3,3,100.0,1.0,1.0,100.0,47.24
+z-ai/glm-5.3-flash,task_001_cantilever,Cantilever Beam Under Point Load and Distributed Self-Weight,3,2,66.7,1.0,0.0,93.8,51.53
+z-ai/glm-5.3-flash,task_002_axial,Stepped Axial Bar Under Intermediate Loading,3,3,100.0,1.0,1.0,100.0,79.67
+z-ai/glm-5.3-flash,task_003_boundary,Statically Indeterminate Propped Cantilever Under Uniform Load,3,0,0.0,0.0,0.0,90.0,63.9
+z-ai/glm-5.3-flash,task_004_thermal,Constrained Thermal Expansion of a Bar with Initial Clearance Gap,3,0,0.0,0.0,0.0,20.3,17.32
+z-ai/glm-5.3-flash,task_005_convergence,Finite Element Mesh Convergence and Discretization Error Analysis,3,0,0.0,0.0,0.0,27.5,294.27
+anthropic/claude-haiku-5.5,task_001_cantilever,Cantilever Beam Under Point Load and Distributed Self-Weight,3,3,100.0,1.0,1.0,100.0,7.1
+anthropic/claude-haiku-5.5,task_002_axial,Stepped Axial Bar Under Intermediate Loading,3,3,100.0,1.0,1.0,100.0,11.91
+anthropic/claude-haiku-5.5,task_003_boundary,Statically Indeterminate Propped Cantilever Under Uniform Load,3,0,0.0,0.0,0.0,90.0,12.08
+anthropic/claude-haiku-5.5,task_004_thermal,Constrained Thermal Expansion of a Bar with Initial Clearance Gap,3,0,0.0,0.0,0.0,20.3,5.85
+anthropic/claude-haiku-5.5,task_005_convergence,Finite Element Mesh Convergence and Discretization Error Analysis,3,3,100.0,1.0,1.0,100.0,4.52

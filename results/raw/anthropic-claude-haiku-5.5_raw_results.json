@@ -1,0 +1,1511 @@
+[
+  {
+    "task_id": "task_001_cantilever",
+    "task_title": "Cantilever Beam Under Point Load and Distributed Self-Weight",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 0,
+    "timestamp": 1794199309.7206614,
+    "prompt": "You are acting as a professional mechanical/structural engineer.\nAnalyze the following prismatic cantilever beam under combined point loading and distributed self-weight.\n\n### Beam Specifications:\n- Span length: L = 2.5 m\n- Cross-section: Rectangular, width b = 0.06 m (horizontal), depth h = 0.12 m (vertical)\n- Material: Structural Steel\n  - Elastic Modulus: E = 210.0 GPa\n  - Density: rho = 7850.0 kg/m^3\n- Loading:\n  - Downward point load at free tip (x = L): P = 6500.0 N\n  - Self-weight distributed load along the span due to gravity: g = 9.81 m/s^2 (w0 = rho * g * b * h)\n- Boundary conditions:\n  - Fully clamped/fixed at root x = 0 (zero displacement and zero slope)\n  - Free at tip x = L\n\n### Required Deliverable:\nCompute the exact values using Euler-Bernoulli beam theory.\nYou must return your final numerical results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"second_moment_of_area_m4\": <float, second moment of area I in m^4>,\n  \"section_modulus_m3\": <float, elastic section modulus Z in m^3>,\n  \"support_reaction_N\": <float, total vertical reaction force at fixed root in N>,\n  \"root_bending_moment_Nm\": <float, magnitude of bending moment at fixed root in N*m>,\n  \"max_bending_stress_MPa\": <float, maximum bending normal stress at the root in MPa>,\n  \"max_shear_stress_MPa\": <float, maximum transverse shear stress at the root in MPa>,\n  \"tip_deflection_mm\": <float, total downward deflection at the tip in mm>\n}\n```\n\nEnsure all units match the requested schema (e.g. stresses in MPa, deflection in mm, moments in N*m, area moments in m^4).\nDo not include units inside the JSON values; provide pure numeric floating-point values.\n",
+    "raw_response": "```json\n{\n  \"second_moment_of_area_m4\": 8.64e-6,\n  \"section_modulus_m3\": 1.44e-4,\n  \"support_reaction_N\": 7886.15,\n  \"root_bending_moment_Nm\": 17982.07,\n  \"max_bending_stress_MPa\": 124.88,\n  \"max_shear_stress_MPa\": 1.643,\n  \"tip_deflection_mm\": 20.15\n}\n```\n\n**Key intermediate values**\n\n- Second moment of area: I = bh\u00b3/12 = 0.06(0.12)\u00b3/12 = 8.64\u00d710\u207b\u2076 m\u2074\n- Section modulus: Z = I/(h/2) = 1.44\u00d710\u207b\u2074 m\u00b3\n- Self-weight intensity: w\u2080 = \u03c1gbh = 7850(9.81)(0.06)(0.12) \u2248 554.46 N/m\n- Self-weight total: w\u2080L \u2248 1386.15 N\n- Support reaction: R = P + w\u2080L \u2248 7886.15 N\n- Root moment: M = PL + w\u2080L\u00b2/2 \u2248 16250 + 1732.07 = 17982.07 N\u00b7m\n- Bending stress: \u03c3 = M/Z \u2248 124.88 MPa\n- Max shear stress (rectangular section, \u03c4 = 1.5V/A): \u03c4 = 1.5(7886.15)/(0.0072) \u2248 1.643 MPa\n- Tip deflection: \u03b4 = PL\u00b3/(3EI) + w\u2080L\u2074/(8EI), with EI = 1.8144\u00d710\u2076 N\u00b7m\u00b2\n  - Point load part \u2248 18.66 mm\n  - Self-weight part \u2248 1.49 mm\n  - Total \u2248 20.15 mm",
+    "parsed_json": {
+      "second_moment_of_area_m4": 8.64e-06,
+      "section_modulus_m3": 0.000144,
+      "support_reaction_N": 7886.15,
+      "root_bending_moment_Nm": 17982.07,
+      "max_bending_stress_MPa": 124.88,
+      "max_shear_stress_MPa": 1.643,
+      "tip_deflection_mm": 20.15
+    },
+    "parse_success": true,
+    "latency_seconds": 7.34052038192749,
+    "prompt_tokens": 695,
+    "completion_tokens": 1797,
+    "estimated_cost_usd": 0.000968,
+    "adapter_error": null,
+    "all_passed": true,
+    "score": 1.0,
+    "failure_reasons": [],
+    "parameter_results": [
+      {
+        "parameter": "second_moment_of_area_m4",
+        "passed": true,
+        "candidate": 8.64e-06,
+        "reference": 8.639999999999999e-06,
+        "relative_error": 1.9607244149405104e-16,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m^4"
+      },
+      {
+        "parameter": "section_modulus_m3",
+        "passed": true,
+        "candidate": 0.000144,
+        "reference": 0.000144,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m^3"
+      },
+      {
+        "parameter": "support_reaction_N",
+        "passed": true,
+        "candidate": 7886.15,
+        "reference": 7886.153,
+        "relative_error": 3.8041361873288287e-07,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "root_bending_moment_Nm",
+        "passed": true,
+        "candidate": 17982.07,
+        "reference": 17982.69125,
+        "relative_error": 3.454710929322915e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N*m"
+      },
+      {
+        "parameter": "max_bending_stress_MPa",
+        "passed": true,
+        "candidate": 124.88,
+        "reference": 124.87980034722223,
+        "relative_error": 1.5987595849066147e-06,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "max_shear_stress_MPa",
+        "passed": true,
+        "candidate": 1.643,
+        "reference": 1.6429485416666665,
+        "relative_error": 3.1320721269413876e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "tip_deflection_mm",
+        "passed": true,
+        "candidate": 20.15,
+        "reference": 20.150736742058903,
+        "relative_error": 3.656154453981325e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      }
+    ]
+  },
+  {
+    "task_id": "task_001_cantilever",
+    "task_title": "Cantilever Beam Under Point Load and Distributed Self-Weight",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 1,
+    "timestamp": 1794199317.0629842,
+    "prompt": "You are acting as a professional mechanical/structural engineer.\nAnalyze the following prismatic cantilever beam under combined point loading and distributed self-weight.\n\n### Beam Specifications:\n- Span length: L = 2.5 m\n- Cross-section: Rectangular, width b = 0.06 m (horizontal), depth h = 0.12 m (vertical)\n- Material: Structural Steel\n  - Elastic Modulus: E = 210.0 GPa\n  - Density: rho = 7850.0 kg/m^3\n- Loading:\n  - Downward point load at free tip (x = L): P = 6500.0 N\n  - Self-weight distributed load along the span due to gravity: g = 9.81 m/s^2 (w0 = rho * g * b * h)\n- Boundary conditions:\n  - Fully clamped/fixed at root x = 0 (zero displacement and zero slope)\n  - Free at tip x = L\n\n### Required Deliverable:\nCompute the exact values using Euler-Bernoulli beam theory.\nYou must return your final numerical results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"second_moment_of_area_m4\": <float, second moment of area I in m^4>,\n  \"section_modulus_m3\": <float, elastic section modulus Z in m^3>,\n  \"support_reaction_N\": <float, total vertical reaction force at fixed root in N>,\n  \"root_bending_moment_Nm\": <float, magnitude of bending moment at fixed root in N*m>,\n  \"max_bending_stress_MPa\": <float, maximum bending normal stress at the root in MPa>,\n  \"max_shear_stress_MPa\": <float, maximum transverse shear stress at the root in MPa>,\n  \"tip_deflection_mm\": <float, total downward deflection at the tip in mm>\n}\n```\n\nEnsure all units match the requested schema (e.g. stresses in MPa, deflection in mm, moments in N*m, area moments in m^4).\nDo not include units inside the JSON values; provide pure numeric floating-point values.\n",
+    "raw_response": "The root bending stress is about 124.9 MPa, and the tip deflection is about 20.15 mm. Self-weight adds about 2.1% to the root moment and 7% to the tip deflection.\n\n**Section properties**\n- I = b\u00b7h\u00b3/12 = 0.06 \u00d7 0.12\u00b3 / 12 = 8.64\u00d710\u207b\u2076 m\u2074\n- Z = I/(h/2) = 1.44\u00d710\u207b\u2074 m\u00b3\n- EI = 210\u00d710\u2079 \u00d7 8.64\u00d710\u207b\u2076 = 1.8144\u00d710\u2076 N\u00b7m\u00b2\n\n**Self-weight**\n- w\u2080 = \u03c1\u00b7g\u00b7b\u00b7h = 7850 \u00d7 9.81 \u00d7 0.06 \u00d7 0.12 = 554.46 N/m\n- Total self-weight = w\u2080L = 1386.15 N\n\n**Root reaction and moment**\n- V = P + w\u2080L = 6500 + 1386.15 = 7886.15 N\n- M = PL + w\u2080L\u00b2/2 = 16250 + 1732.69 = 17982.7 N\u00b7m\n\n**Stresses at root**\n- \u03c3_max = M/Z = 17982.7 / 1.44\u00d710\u207b\u2074 \u2248 124.88 MPa\n- \u03c4_max = 1.5V/A = 1.5 \u00d7 7886.15 / 0.0072 \u2248 1.643 MPa (rectangular section, parabolic distribution)\n\n**Tip deflection**\n- \u03b4 = PL\u00b3/(3EI) + w\u2080L\u2074/(8EI) = 0.018659 m + 0.001492 m \u2248 0.020151 m \u2248 20.15 mm\n\n```json\n{\n  \"second_moment_of_area_m4\": 8.64e-6,\n  \"section_modulus_m3\": 1.44e-4,\n  \"support_reaction_N\": 7886.15,\n  \"root_bending_moment_Nm\": 17982.7,\n  \"max_bending_stress_MPa\": 124.88,\n  \"max_shear_stress_MPa\": 1.643,\n  \"tip_deflection_mm\": 20.15\n}\n```",
+    "parsed_json": {
+      "second_moment_of_area_m4": 8.64e-06,
+      "section_modulus_m3": 0.000144,
+      "support_reaction_N": 7886.15,
+      "root_bending_moment_Nm": 17982.7,
+      "max_bending_stress_MPa": 124.88,
+      "max_shear_stress_MPa": 1.643,
+      "tip_deflection_mm": 20.15
+    },
+    "parse_success": true,
+    "latency_seconds": 7.260940790176392,
+    "prompt_tokens": 695,
+    "completion_tokens": 1720,
+    "estimated_cost_usd": 0.0009295,
+    "adapter_error": null,
+    "all_passed": true,
+    "score": 1.0,
+    "failure_reasons": [],
+    "parameter_results": [
+      {
+        "parameter": "second_moment_of_area_m4",
+        "passed": true,
+        "candidate": 8.64e-06,
+        "reference": 8.639999999999999e-06,
+        "relative_error": 1.9607244149405104e-16,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m^4"
+      },
+      {
+        "parameter": "section_modulus_m3",
+        "passed": true,
+        "candidate": 0.000144,
+        "reference": 0.000144,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m^3"
+      },
+      {
+        "parameter": "support_reaction_N",
+        "passed": true,
+        "candidate": 7886.15,
+        "reference": 7886.153,
+        "relative_error": 3.8041361873288287e-07,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "root_bending_moment_Nm",
+        "passed": true,
+        "candidate": 17982.7,
+        "reference": 17982.69125,
+        "relative_error": 4.865790041784272e-07,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N*m"
+      },
+      {
+        "parameter": "max_bending_stress_MPa",
+        "passed": true,
+        "candidate": 124.88,
+        "reference": 124.87980034722223,
+        "relative_error": 1.5987595849066147e-06,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "max_shear_stress_MPa",
+        "passed": true,
+        "candidate": 1.643,
+        "reference": 1.6429485416666665,
+        "relative_error": 3.1320721269413876e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "tip_deflection_mm",
+        "passed": true,
+        "candidate": 20.15,
+        "reference": 20.150736742058903,
+        "relative_error": 3.656154453981325e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      }
+    ]
+  },
+  {
+    "task_id": "task_001_cantilever",
+    "task_title": "Cantilever Beam Under Point Load and Distributed Self-Weight",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 2,
+    "timestamp": 1794199324.3256154,
+    "prompt": "You are acting as a professional mechanical/structural engineer.\nAnalyze the following prismatic cantilever beam under combined point loading and distributed self-weight.\n\n### Beam Specifications:\n- Span length: L = 2.5 m\n- Cross-section: Rectangular, width b = 0.06 m (horizontal), depth h = 0.12 m (vertical)\n- Material: Structural Steel\n  - Elastic Modulus: E = 210.0 GPa\n  - Density: rho = 7850.0 kg/m^3\n- Loading:\n  - Downward point load at free tip (x = L): P = 6500.0 N\n  - Self-weight distributed load along the span due to gravity: g = 9.81 m/s^2 (w0 = rho * g * b * h)\n- Boundary conditions:\n  - Fully clamped/fixed at root x = 0 (zero displacement and zero slope)\n  - Free at tip x = L\n\n### Required Deliverable:\nCompute the exact values using Euler-Bernoulli beam theory.\nYou must return your final numerical results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"second_moment_of_area_m4\": <float, second moment of area I in m^4>,\n  \"section_modulus_m3\": <float, elastic section modulus Z in m^3>,\n  \"support_reaction_N\": <float, total vertical reaction force at fixed root in N>,\n  \"root_bending_moment_Nm\": <float, magnitude of bending moment at fixed root in N*m>,\n  \"max_bending_stress_MPa\": <float, maximum bending normal stress at the root in MPa>,\n  \"max_shear_stress_MPa\": <float, maximum transverse shear stress at the root in MPa>,\n  \"tip_deflection_mm\": <float, total downward deflection at the tip in mm>\n}\n```\n\nEnsure all units match the requested schema (e.g. stresses in MPa, deflection in mm, moments in N*m, area moments in m^4).\nDo not include units inside the JSON values; provide pure numeric floating-point values.\n",
+    "raw_response": "```json\n{\n  \"second_moment_of_area_m4\": 8.64e-6,\n  \"section_modulus_m3\": 1.44e-4,\n  \"support_reaction_N\": 7886.15,\n  \"root_bending_moment_Nm\": 17983.94,\n  \"max_bending_stress_MPa\": 124.89,\n  \"max_shear_stress_MPa\": 1.64,\n  \"tip_deflection_mm\": 20.15\n}\n```\n\n**Basis of calculation**\n\n- **Section properties:** I = bh\u00b3/12 = 0.06(0.12)\u00b3/12 = 8.64\u00d710\u207b\u2076 m\u2074; Z = I/(h/2) = 1.44\u00d710\u207b\u2074 m\u00b3; A = bh = 0.0072 m\u00b2.\n- **Self-weight:** w\u2080 = \u03c1gbh = 7850(9.81)(0.0072) = 554.46 N/m; total weight W = w\u2080L = 1386.15 N.\n- **Root reaction:** V = P + W = 6500 + 1386.15 = 7886.15 N.\n- **Root moment:** M = PL + w\u2080L\u00b2/2 = 16250 + 1733.94 = 17983.94 N\u00b7m.\n- **Bending stress:** \u03c3 = M/Z \u2248 124.89 MPa.\n- **Shear stress:** \u03c4_max = 1.5V/A \u2248 1.64 MPa (parabolic distribution, peak at the neutral axis).\n- **Tip deflection:** EI = 210\u00d710\u2079 \u00d7 8.64\u00d710\u207b\u2076 = 1.8144\u00d710\u2076 N\u00b7m\u00b2. Superposing PL\u00b3/(3EI) = 18.66 mm and w\u2080L\u2074/(8EI) = 1.49 mm gives \u03b4 \u2248 20.15 mm.",
+    "parsed_json": {
+      "second_moment_of_area_m4": 8.64e-06,
+      "section_modulus_m3": 0.000144,
+      "support_reaction_N": 7886.15,
+      "root_bending_moment_Nm": 17983.94,
+      "max_bending_stress_MPa": 124.89,
+      "max_shear_stress_MPa": 1.64,
+      "tip_deflection_mm": 20.15
+    },
+    "parse_success": true,
+    "latency_seconds": 6.712268352508545,
+    "prompt_tokens": 695,
+    "completion_tokens": 1632,
+    "estimated_cost_usd": 0.0008855,
+    "adapter_error": null,
+    "all_passed": true,
+    "score": 1.0,
+    "failure_reasons": [],
+    "parameter_results": [
+      {
+        "parameter": "second_moment_of_area_m4",
+        "passed": true,
+        "candidate": 8.64e-06,
+        "reference": 8.639999999999999e-06,
+        "relative_error": 1.9607244149405104e-16,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m^4"
+      },
+      {
+        "parameter": "section_modulus_m3",
+        "passed": true,
+        "candidate": 0.000144,
+        "reference": 0.000144,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m^3"
+      },
+      {
+        "parameter": "support_reaction_N",
+        "passed": true,
+        "candidate": 7886.15,
+        "reference": 7886.153,
+        "relative_error": 3.8041361873288287e-07,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "root_bending_moment_Nm",
+        "passed": true,
+        "candidate": 17983.94,
+        "reference": 17982.69125,
+        "relative_error": 6.944177501789872e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N*m"
+      },
+      {
+        "parameter": "max_bending_stress_MPa",
+        "passed": true,
+        "candidate": 124.89,
+        "reference": 124.87980034722223,
+        "relative_error": 8.1675761407464e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "max_shear_stress_MPa",
+        "passed": true,
+        "candidate": 1.64,
+        "reference": 1.6429485416666665,
+        "relative_error": 0.0017946646482764912,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "tip_deflection_mm",
+        "passed": true,
+        "candidate": 20.15,
+        "reference": 20.150736742058903,
+        "relative_error": 3.656154453981325e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      }
+    ]
+  },
+  {
+    "task_id": "task_002_axial",
+    "task_title": "Stepped Axial Bar Under Intermediate Loading",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 0,
+    "timestamp": 1794199331.040391,
+    "prompt": "You are acting as a professional mechanical engineer.\nAnalyze the following stepped cylindrical bar subjected to axial loading.\n\n### Problem Geometry & Loading:\nThe bar is aligned horizontally along the x-axis, fixed rigidly to a wall at x = 0.\nIt consists of two segments:\n- Segment 1 (from x = 0 to x = 1.2 m):\n  - Length: L1 = 1.2 m\n  - Diameter: d1 = 0.05 m (circular cross-section)\n  - Material: Aluminum alloy with Elastic Modulus E1 = 70.0 GPa\n- Intermediate Junction (at x = 1.2 m):\n  - A concentrated axial load of F_int = 45000.0 N is applied directed toward the wall (negative x direction).\n- Segment 2 (from x = 1.2 m to x = 2.0 m):\n  - Length: L2 = 0.8 m\n  - Diameter: d2 = 0.03 m (circular cross-section)\n  - Material: Structural Steel with Elastic Modulus E2 = 200.0 GPa\n- Free End (at x = 2.0 m):\n  - A concentrated axial load of F_end = 80000.0 N is applied directed away from the wall (positive x direction, tension).\n\n### Required Deliverable:\nPerform static equilibrium and axial deformation analysis.\nYou must return your numerical results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"normal_force_seg1_N\": <float, internal normal force in segment 1 in N (positive for tension)>,\n  \"normal_force_seg2_N\": <float, internal normal force in segment 2 in N (positive for tension)>,\n  \"wall_reaction_N\": <float, magnitude of support reaction force at fixed wall in N>,\n  \"stress_seg1_MPa\": <float, axial normal stress in segment 1 in MPa>,\n  \"stress_seg2_MPa\": <float, axial normal stress in segment 2 in MPa>,\n  \"elongation_seg1_mm\": <float, elongation of segment 1 in mm>,\n  \"elongation_seg2_mm\": <float, elongation of segment 2 in mm>,\n  \"tip_deflection_mm\": <float, total cumulative displacement at the free tip in mm>,\n  \"strain_energy_J\": <float, total elastic strain energy in the system in Joules>\n}\n```\n\nEnsure all units match the requested schema. Do not include units or text inside the JSON values.\n",
+    "raw_response": "## Analysis\n\n**Equilibrium:** Take x positive to the right, with the wall at x = 0.\nSumming forces on the whole bar: R + (\u221245000) + 80000 = 0, so R = \u221235000 N. The wall reaction therefore points toward the wall (\u2212x) with magnitude 35000 N.\n\n**Internal normal forces** (tension positive, found from the loads on the free side of each cut):\n- Segment 1 (cut at 0 < x < 1.2 m): N\u2081 = \u221245000 + 80000 = +35000 N (tension)\n- Segment 2 (cut at 1.2 < x < 2.0 m): N\u2082 = +80000 N (tension)\n\n**Areas:**\n- A\u2081 = \u03c0(0.05)\u00b2/4 = 1.9635\u00d710\u207b\u00b3 m\u00b2\n- A\u2082 = \u03c0(0.03)\u00b2/4 = 7.0686\u00d710\u207b\u2074 m\u00b2\n\n**Stresses:**\n- \u03c3\u2081 = 35000 / 1.9635\u00d710\u207b\u00b3 = 17.83 MPa\n- \u03c3\u2082 = 80000 / 7.0686\u00d710\u207b\u2074 = 113.18 MPa\n\n**Elongations** (\u03b4 = NL/EA):\n- \u03b4\u2081 = (35000)(1.2) / (70\u00d710\u2079 \u00d7 1.9635\u00d710\u207b\u00b3) = 3.0558\u00d710\u207b\u2074 m = 0.3056 mm\n- \u03b4\u2082 = (80000)(0.8) / (200\u00d710\u2079 \u00d7 7.0686\u00d710\u207b\u2074) = 4.5271\u00d710\u207b\u2074 m = 0.4527 mm\n\n**Tip displacement:** Since the wall is fixed, the tip displacement is the sum of the elongations: 0.3056 + 0.4527 = 0.7583 mm (in the +x direction).\n\n**Strain energy** (U = \u00bdN\u03b4 for each segment):\n- U\u2081 = \u00bd(35000)(3.0558\u00d710\u207b\u2074) = 5.348 J\n- U\u2082 = \u00bd(80000)(4.5271\u00d710\u207b\u2074) = 18.108 J\n- U_total = 23.456 J\n\n```json\n{\n  \"normal_force_seg1_N\": 35000.0,\n  \"normal_force_seg2_N\": 80000.0,\n  \"wall_reaction_N\": 35000.0,\n  \"stress_seg1_MPa\": 17.83,\n  \"stress_seg2_MPa\": 113.18,\n  \"elongation_seg1_mm\": 0.3056,\n  \"elongation_seg2_mm\": 0.4527,\n  \"tip_deflection_mm\": 0.7583,\n  \"strain_energy_J\": 23.456\n}\n```",
+    "parsed_json": {
+      "normal_force_seg1_N": 35000.0,
+      "normal_force_seg2_N": 80000.0,
+      "wall_reaction_N": 35000.0,
+      "stress_seg1_MPa": 17.83,
+      "stress_seg2_MPa": 113.18,
+      "elongation_seg1_mm": 0.3056,
+      "elongation_seg2_mm": 0.4527,
+      "tip_deflection_mm": 0.7583,
+      "strain_energy_J": 23.456
+    },
+    "parse_success": true,
+    "latency_seconds": 10.632667779922485,
+    "prompt_tokens": 841,
+    "completion_tokens": 2490,
+    "estimated_cost_usd": 0.0013291,
+    "adapter_error": null,
+    "all_passed": true,
+    "score": 1.0,
+    "failure_reasons": [],
+    "parameter_results": [
+      {
+        "parameter": "normal_force_seg1_N",
+        "passed": true,
+        "candidate": 35000.0,
+        "reference": 35000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "normal_force_seg2_N",
+        "passed": true,
+        "candidate": 80000.0,
+        "reference": 80000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "wall_reaction_N",
+        "passed": true,
+        "candidate": 35000.0,
+        "reference": 35000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "stress_seg1_MPa",
+        "passed": true,
+        "candidate": 17.83,
+        "reference": 17.825353626292276,
+        "relative_error": 0.00026066095546449286,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "stress_seg2_MPa",
+        "passed": true,
+        "candidate": 113.18,
+        "reference": 113.17684842090335,
+        "relative_error": 2.78464998860158e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "elongation_seg1_mm",
+        "passed": true,
+        "candidate": 0.3056,
+        "reference": 0.30557749073643903,
+        "relative_error": 7.366139275084564e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "elongation_seg2_mm",
+        "passed": true,
+        "candidate": 0.4527,
+        "reference": 0.45270739368361346,
+        "relative_error": 1.6332146805256488e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "tip_deflection_mm",
+        "passed": true,
+        "candidate": 0.7583,
+        "reference": 0.7582848844200525,
+        "relative_error": 1.993390644869511e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "strain_energy_J",
+        "passed": true,
+        "candidate": 23.456,
+        "reference": 23.455901835232222,
+        "relative_error": 4.185077532603153e-06,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "J"
+      }
+    ]
+  },
+  {
+    "task_id": "task_002_axial",
+    "task_title": "Stepped Axial Bar Under Intermediate Loading",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 1,
+    "timestamp": 1794199341.674938,
+    "prompt": "You are acting as a professional mechanical engineer.\nAnalyze the following stepped cylindrical bar subjected to axial loading.\n\n### Problem Geometry & Loading:\nThe bar is aligned horizontally along the x-axis, fixed rigidly to a wall at x = 0.\nIt consists of two segments:\n- Segment 1 (from x = 0 to x = 1.2 m):\n  - Length: L1 = 1.2 m\n  - Diameter: d1 = 0.05 m (circular cross-section)\n  - Material: Aluminum alloy with Elastic Modulus E1 = 70.0 GPa\n- Intermediate Junction (at x = 1.2 m):\n  - A concentrated axial load of F_int = 45000.0 N is applied directed toward the wall (negative x direction).\n- Segment 2 (from x = 1.2 m to x = 2.0 m):\n  - Length: L2 = 0.8 m\n  - Diameter: d2 = 0.03 m (circular cross-section)\n  - Material: Structural Steel with Elastic Modulus E2 = 200.0 GPa\n- Free End (at x = 2.0 m):\n  - A concentrated axial load of F_end = 80000.0 N is applied directed away from the wall (positive x direction, tension).\n\n### Required Deliverable:\nPerform static equilibrium and axial deformation analysis.\nYou must return your numerical results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"normal_force_seg1_N\": <float, internal normal force in segment 1 in N (positive for tension)>,\n  \"normal_force_seg2_N\": <float, internal normal force in segment 2 in N (positive for tension)>,\n  \"wall_reaction_N\": <float, magnitude of support reaction force at fixed wall in N>,\n  \"stress_seg1_MPa\": <float, axial normal stress in segment 1 in MPa>,\n  \"stress_seg2_MPa\": <float, axial normal stress in segment 2 in MPa>,\n  \"elongation_seg1_mm\": <float, elongation of segment 1 in mm>,\n  \"elongation_seg2_mm\": <float, elongation of segment 2 in mm>,\n  \"tip_deflection_mm\": <float, total cumulative displacement at the free tip in mm>,\n  \"strain_energy_J\": <float, total elastic strain energy in the system in Joules>\n}\n```\n\nEnsure all units match the requested schema. Do not include units or text inside the JSON values.\n",
+    "raw_response": "```json\n{\n  \"normal_force_seg1_N\": 35000.0,\n  \"normal_force_seg2_N\": 80000.0,\n  \"wall_reaction_N\": 35000.0,\n  \"stress_seg1_MPa\": 17.825,\n  \"stress_seg2_MPa\": 113.177,\n  \"elongation_seg1_mm\": 0.3056,\n  \"elongation_seg2_mm\": 0.4527,\n  \"tip_deflection_mm\": 0.7583,\n  \"strain_energy_J\": 23.456\n}\n```\n\n**Basis of the results**\n\n- **Equilibrium:** Taking +x as positive, the wall reaction is R = 45000 \u2212 80000 = \u221235000 N, so its magnitude is 35000 N and it acts toward the wall (\u2212x).\n- **Internal forces:** Segment 1 (0\u20131.2 m) carries 80000 \u2212 45000 = 35000 N in tension. Segment 2 (1.2\u20132.0 m) carries 80000 N in tension.\n- **Areas:** A\u2081 = \u03c0(0.05)\u00b2/4 = 1.9635\u00d710\u207b\u00b3 m\u00b2; A\u2082 = \u03c0(0.03)\u00b2/4 = 7.0686\u00d710\u207b\u2074 m\u00b2.\n- **Stresses:** \u03c3\u2081 = 35000 / 1.9635\u00d710\u207b\u00b3 = 17.825 MPa; \u03c3\u2082 = 80000 / 7.0686\u00d710\u207b\u2074 = 113.177 MPa.\n- **Elongations:** \u03b4\u2081 = N\u2081L\u2081/(E\u2081A\u2081) = 0.3056 mm; \u03b4\u2082 = N\u2082L\u2082/(E\u2082A\u2082) = 0.4527 mm.\n- **Tip deflection:** Since the wall is fixed, the tip displacement equals the sum of the elongations, 0.7583 mm.\n- **Strain energy:** U = \u03a3 N\u00b2L/(2EA) = 5.348 J + 18.108 J = 23.456 J. This matches the work done by the external loads, \u00bd(80000 \u00d7 0.000758 \u2212 45000 \u00d7 0.000306) \u2248 23.46 J.",
+    "parsed_json": {
+      "normal_force_seg1_N": 35000.0,
+      "normal_force_seg2_N": 80000.0,
+      "wall_reaction_N": 35000.0,
+      "stress_seg1_MPa": 17.825,
+      "stress_seg2_MPa": 113.177,
+      "elongation_seg1_mm": 0.3056,
+      "elongation_seg2_mm": 0.4527,
+      "tip_deflection_mm": 0.7583,
+      "strain_energy_J": 23.456
+    },
+    "parse_success": true,
+    "latency_seconds": 12.16727900505066,
+    "prompt_tokens": 841,
+    "completion_tokens": 2524,
+    "estimated_cost_usd": 0.0013460999999999998,
+    "adapter_error": null,
+    "all_passed": true,
+    "score": 1.0,
+    "failure_reasons": [],
+    "parameter_results": [
+      {
+        "parameter": "normal_force_seg1_N",
+        "passed": true,
+        "candidate": 35000.0,
+        "reference": 35000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "normal_force_seg2_N",
+        "passed": true,
+        "candidate": 80000.0,
+        "reference": 80000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "wall_reaction_N",
+        "passed": true,
+        "candidate": 35000.0,
+        "reference": 35000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "stress_seg1_MPa",
+        "passed": true,
+        "candidate": 17.825,
+        "reference": 17.825353626292276,
+        "relative_error": 1.9838388605968624e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "stress_seg2_MPa",
+        "passed": true,
+        "candidate": 113.177,
+        "reference": 113.17684842090335,
+        "relative_error": 1.339311871350916e-06,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "elongation_seg1_mm",
+        "passed": true,
+        "candidate": 0.3056,
+        "reference": 0.30557749073643903,
+        "relative_error": 7.366139275084564e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "elongation_seg2_mm",
+        "passed": true,
+        "candidate": 0.4527,
+        "reference": 0.45270739368361346,
+        "relative_error": 1.6332146805256488e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "tip_deflection_mm",
+        "passed": true,
+        "candidate": 0.7583,
+        "reference": 0.7582848844200525,
+        "relative_error": 1.993390644869511e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "strain_energy_J",
+        "passed": true,
+        "candidate": 23.456,
+        "reference": 23.455901835232222,
+        "relative_error": 4.185077532603153e-06,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "J"
+      }
+    ]
+  },
+  {
+    "task_id": "task_002_axial",
+    "task_title": "Stepped Axial Bar Under Intermediate Loading",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 2,
+    "timestamp": 1794199353.8464515,
+    "prompt": "You are acting as a professional mechanical engineer.\nAnalyze the following stepped cylindrical bar subjected to axial loading.\n\n### Problem Geometry & Loading:\nThe bar is aligned horizontally along the x-axis, fixed rigidly to a wall at x = 0.\nIt consists of two segments:\n- Segment 1 (from x = 0 to x = 1.2 m):\n  - Length: L1 = 1.2 m\n  - Diameter: d1 = 0.05 m (circular cross-section)\n  - Material: Aluminum alloy with Elastic Modulus E1 = 70.0 GPa\n- Intermediate Junction (at x = 1.2 m):\n  - A concentrated axial load of F_int = 45000.0 N is applied directed toward the wall (negative x direction).\n- Segment 2 (from x = 1.2 m to x = 2.0 m):\n  - Length: L2 = 0.8 m\n  - Diameter: d2 = 0.03 m (circular cross-section)\n  - Material: Structural Steel with Elastic Modulus E2 = 200.0 GPa\n- Free End (at x = 2.0 m):\n  - A concentrated axial load of F_end = 80000.0 N is applied directed away from the wall (positive x direction, tension).\n\n### Required Deliverable:\nPerform static equilibrium and axial deformation analysis.\nYou must return your numerical results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"normal_force_seg1_N\": <float, internal normal force in segment 1 in N (positive for tension)>,\n  \"normal_force_seg2_N\": <float, internal normal force in segment 2 in N (positive for tension)>,\n  \"wall_reaction_N\": <float, magnitude of support reaction force at fixed wall in N>,\n  \"stress_seg1_MPa\": <float, axial normal stress in segment 1 in MPa>,\n  \"stress_seg2_MPa\": <float, axial normal stress in segment 2 in MPa>,\n  \"elongation_seg1_mm\": <float, elongation of segment 1 in mm>,\n  \"elongation_seg2_mm\": <float, elongation of segment 2 in mm>,\n  \"tip_deflection_mm\": <float, total cumulative displacement at the free tip in mm>,\n  \"strain_energy_J\": <float, total elastic strain energy in the system in Joules>\n}\n```\n\nEnsure all units match the requested schema. Do not include units or text inside the JSON values.\n",
+    "raw_response": "## Analysis\n\n**Sign convention:** Tension positive, x-axis positive away from the wall.\n\n**Equilibrium of the whole bar:** With the wall reaction $R_x$ taken positive in +x:\n\n$$\\sum F_x = 0:\\quad R_x - 45000 + 80000 = 0 \\;\\Rightarrow\\; R_x = -35000\\ \\text{N}$$\n\nThe wall reaction is 35000 N, directed toward the wall (negative x).\n\n**Internal forces (method of sections):**\n- Segment 1 (cut at 0 < x < 1.2 m, right free body): $-N_1 - 45000 + 80000 = 0 \\;\\Rightarrow\\; N_1 = +35000$ N (tension)\n- Segment 2 (cut at 1.2 < x < 2.0 m, right free body): $-N_2 + 80000 = 0 \\;\\Rightarrow\\; N_2 = +80000$ N (tension)\n\nCheck at the junction: $N_2 - N_1 = 45000$ N, which matches the applied load.\n\n**Areas:**\n- $A_1 = \\pi(0.05)^2/4 = 1.96350\\times10^{-3}$ m\u00b2\n- $A_2 = \\pi(0.03)^2/4 = 7.06858\\times10^{-4}$ m\u00b2\n\n**Stresses:**\n- $\\sigma_1 = 35000 / 1.96350\\times10^{-3} = 17.83$ MPa\n- $\\sigma_2 = 80000 / 7.06858\\times10^{-4} = 113.18$ MPa\n\n**Elongations ($\\delta = NL/EA$):**\n- $\\delta_1 = (35000)(1.2)/[(70\\times10^9)(1.96350\\times10^{-3})] = 3.056\\times10^{-4}$ m = 0.3056 mm\n- $\\delta_2 = (80000)(0.8)/[(200\\times10^9)(7.06858\\times10^{-4})] = 4.526\\times10^{-4}$ m = 0.4526 mm\n\n**Tip displacement** (wall is fixed, so the tip displacement equals the total elongation):\n$$\\delta_{tip} = 0.3056 + 0.4526 = 0.7582\\ \\text{mm}$$\n\n**Strain energy ($U = N^2L/2EA$):**\n- $U_1 = \\tfrac{1}{2}(35000)(3.056\\times10^{-4}) = 5.348$ J\n- $U_2 = \\tfrac{1}{2}(80000)(4.526\\times10^{-4}) = 18.105$ J\n- $U_{total} = 23.45$ J\n\n```json\n{\n  \"normal_force_seg1_N\": 35000.0,\n  \"normal_force_seg2_N\": 80000.0,\n  \"wall_reaction_N\": 35000.0,\n  \"stress_seg1_MPa\": 17.83,\n  \"stress_seg2_MPa\": 113.18,\n  \"elongation_seg1_mm\": 0.3056,\n  \"elongation_seg2_mm\": 0.4526,\n  \"tip_deflection_mm\": 0.7582,\n  \"strain_energy_J\": 23.45\n}\n```",
+    "parsed_json": {
+      "normal_force_seg1_N": 35000.0,
+      "normal_force_seg2_N": 80000.0,
+      "wall_reaction_N": 35000.0,
+      "stress_seg1_MPa": 17.83,
+      "stress_seg2_MPa": 113.18,
+      "elongation_seg1_mm": 0.3056,
+      "elongation_seg2_mm": 0.4526,
+      "tip_deflection_mm": 0.7582,
+      "strain_energy_J": 23.45
+    },
+    "parse_success": true,
+    "latency_seconds": 12.9383544921875,
+    "prompt_tokens": 841,
+    "completion_tokens": 2634,
+    "estimated_cost_usd": 0.0014011,
+    "adapter_error": null,
+    "all_passed": true,
+    "score": 1.0,
+    "failure_reasons": [],
+    "parameter_results": [
+      {
+        "parameter": "normal_force_seg1_N",
+        "passed": true,
+        "candidate": 35000.0,
+        "reference": 35000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "normal_force_seg2_N",
+        "passed": true,
+        "candidate": 80000.0,
+        "reference": 80000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "wall_reaction_N",
+        "passed": true,
+        "candidate": 35000.0,
+        "reference": 35000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "stress_seg1_MPa",
+        "passed": true,
+        "candidate": 17.83,
+        "reference": 17.825353626292276,
+        "relative_error": 0.00026066095546449286,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "stress_seg2_MPa",
+        "passed": true,
+        "candidate": 113.18,
+        "reference": 113.17684842090335,
+        "relative_error": 2.78464998860158e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "elongation_seg1_mm",
+        "passed": true,
+        "candidate": 0.3056,
+        "reference": 0.30557749073643903,
+        "relative_error": 7.366139275084564e-05,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "elongation_seg2_mm",
+        "passed": true,
+        "candidate": 0.4526,
+        "reference": 0.45270739368361346,
+        "relative_error": 0.00023722538026076448,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "tip_deflection_mm",
+        "passed": true,
+        "candidate": 0.7582,
+        "reference": 0.7582848844200525,
+        "relative_error": 0.00011194265083817534,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "strain_energy_J",
+        "passed": true,
+        "candidate": 23.45,
+        "reference": 23.455901835232222,
+        "relative_error": 0.00025161408304317373,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "J"
+      }
+    ]
+  },
+  {
+    "task_id": "task_003_boundary",
+    "task_title": "Statically Indeterminate Propped Cantilever Under Uniform Load",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 0,
+    "timestamp": 1794199366.7888777,
+    "prompt": "You are acting as a professional structural engineer.\nAnalyze the following statically indeterminate beam structure.\n\n### Beam Geometry, Boundary Conditions & Loading:\n- Span length: L = 4.0 m\n- Cross-section: Rectangular, width b = 0.1 m, height h = 0.2 m\n- Material: Structural Steel with Elastic Modulus E = 205.0 GPa\n- Support Conditions:\n  - At x = 0 (Left End A): Fully clamped/fixed support (zero deflection, zero slope).\n  - At x = L = 4.0 m (Right End B): Ideal roller/simple support (prevents vertical displacement, allows rotation).\n- Loading:\n  - A uniformly distributed downward load of w = 12000.0 N/m applied across the full span [0, L].\n\n### Required Deliverable:\nEnforce kinematic compatibility and static equilibrium to solve for the indeterminate reactions and internal bending moments.\nReturn your results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"roller_reaction_N\": <float, vertical reaction force at roller support B in N>,\n  \"wall_vertical_reaction_N\": <float, vertical reaction force at fixed wall A in N>,\n  \"wall_moment_Nm\": <float, magnitude of clamping moment at wall A in N*m>,\n  \"x_max_positive_moment_m\": <float, coordinate x where positive bending moment is maximum in m>,\n  \"max_positive_moment_Nm\": <float, maximum positive bending moment in N*m>,\n  \"x_contraflexure_m\": <float, coordinate x of point of contraflexure (where M(x) = 0) between 0 and L in m>,\n  \"max_bending_stress_MPa\": <float, absolute maximum bending stress anywhere in the beam in MPa>,\n  \"max_deflection_mm\": <float, maximum downward deflection along the beam in mm>\n}\n```\n\nEnsure all units match the requested schema. Pure floating point numbers only.\n",
+    "raw_response": "```json\n{\n  \"roller_reaction_N\": 18000.0,\n  \"wall_vertical_reaction_N\": 30000.0,\n  \"wall_moment_Nm\": 24000.0,\n  \"x_max_positive_moment_m\": 2.5,\n  \"max_positive_moment_Nm\": 13500.0,\n  \"x_contraflexure_m\": 1.0,\n  \"max_bending_stress_MPa\": 36.0,\n  \"max_deflection_mm\": 1.217\n}\n```\n\n**Basis of the solution (propped cantilever, fixed at A, roller at B):**\n\n- **Reactions:** R_B = 3wL/8 = 18,000 N; R_A = 5wL/8 = 30,000 N (sum = wL = 48,000 N).\n- **Fixed-end moment:** M_A = wL\u00b2/8 = 24,000 N\u00b7m (hogging).\n- **Sagging moment:** M(x) = \u221224,000 + 30,000x \u2212 6,000x\u00b2. This gives M(0) = \u221224,000 and M(4) = 0, consistent with the roller.\n- **Contraflexure:** M(x) = 0 at x = 1.0 m and x = 4.0 m (the B-end zero is the support itself), so x = 1.0 m is the interior point.\n- **Maximum positive moment:** dM/dx = 0 gives x = 2.5 m, where M = 13,500 N\u00b7m.\n- **Maximum stress:** I = bh\u00b3/12 = 6.667\u00d710\u207b\u2075 m\u2074, S = bh\u00b2/6 = 6.667\u00d710\u207b\u2074 m\u00b3. The largest |M| is at the wall (24,000 N\u00b7m), so \u03c3 = 24,000 / 6.667\u00d710\u207b\u2074 = 36 MPa.\n- **Deflection:** EI\u00b7v(x) = 12,000x\u00b2 \u2212 5,000x\u00b3 + 500x\u2074, which satisfies v(0) = v\u2032(0) = 0 and v(4) = 0. The maximum occurs where v\u2032 = 0, at x \u2248 2.314 m. With EI = 1.3667\u00d710\u2077 N\u00b7m\u00b2, v_max \u2248 1.217 mm downward.",
+    "parsed_json": {
+      "roller_reaction_N": 18000.0,
+      "wall_vertical_reaction_N": 30000.0,
+      "wall_moment_Nm": 24000.0,
+      "x_max_positive_moment_m": 2.5,
+      "max_positive_moment_Nm": 13500.0,
+      "x_contraflexure_m": 1.0,
+      "max_bending_stress_MPa": 36.0,
+      "max_deflection_mm": 1.217
+    },
+    "parse_success": true,
+    "latency_seconds": 13.403162002563477,
+    "prompt_tokens": 686,
+    "completion_tokens": 3157,
+    "estimated_cost_usd": 0.0016470999999999999,
+    "adapter_error": null,
+    "all_passed": false,
+    "score": 0.9,
+    "failure_reasons": [
+      "max_deflection_mm: candidate=1.217 mm, reference=1.0227152639581227 mm (Exceeds tolerance (rel_error: 18.9970%, allowed: 1.00%))"
+    ],
+    "parameter_results": [
+      {
+        "parameter": "roller_reaction_N",
+        "passed": true,
+        "candidate": 18000.0,
+        "reference": 18000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "wall_vertical_reaction_N",
+        "passed": true,
+        "candidate": 30000.0,
+        "reference": 30000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "wall_moment_Nm",
+        "passed": true,
+        "candidate": 24000.0,
+        "reference": 24000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N*m"
+      },
+      {
+        "parameter": "x_max_positive_moment_m",
+        "passed": true,
+        "candidate": 2.5,
+        "reference": 2.5,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m"
+      },
+      {
+        "parameter": "max_positive_moment_Nm",
+        "passed": true,
+        "candidate": 13500.0,
+        "reference": 13500.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N*m"
+      },
+      {
+        "parameter": "x_contraflexure_m",
+        "passed": true,
+        "candidate": 1.0,
+        "reference": 1.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m"
+      },
+      {
+        "parameter": "max_bending_stress_MPa",
+        "passed": true,
+        "candidate": 36.0,
+        "reference": 35.99999999999999,
+        "relative_error": 1.9737298215558342e-16,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "max_deflection_mm",
+        "passed": false,
+        "candidate": 1.217,
+        "reference": 1.0227152639581227,
+        "relative_error": 0.1899695280678169,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 18.9970%, allowed: 1.00%)",
+        "unit": "mm"
+      }
+    ]
+  },
+  {
+    "task_id": "task_003_boundary",
+    "task_title": "Statically Indeterminate Propped Cantilever Under Uniform Load",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 1,
+    "timestamp": 1794199380.1937687,
+    "prompt": "You are acting as a professional structural engineer.\nAnalyze the following statically indeterminate beam structure.\n\n### Beam Geometry, Boundary Conditions & Loading:\n- Span length: L = 4.0 m\n- Cross-section: Rectangular, width b = 0.1 m, height h = 0.2 m\n- Material: Structural Steel with Elastic Modulus E = 205.0 GPa\n- Support Conditions:\n  - At x = 0 (Left End A): Fully clamped/fixed support (zero deflection, zero slope).\n  - At x = L = 4.0 m (Right End B): Ideal roller/simple support (prevents vertical displacement, allows rotation).\n- Loading:\n  - A uniformly distributed downward load of w = 12000.0 N/m applied across the full span [0, L].\n\n### Required Deliverable:\nEnforce kinematic compatibility and static equilibrium to solve for the indeterminate reactions and internal bending moments.\nReturn your results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"roller_reaction_N\": <float, vertical reaction force at roller support B in N>,\n  \"wall_vertical_reaction_N\": <float, vertical reaction force at fixed wall A in N>,\n  \"wall_moment_Nm\": <float, magnitude of clamping moment at wall A in N*m>,\n  \"x_max_positive_moment_m\": <float, coordinate x where positive bending moment is maximum in m>,\n  \"max_positive_moment_Nm\": <float, maximum positive bending moment in N*m>,\n  \"x_contraflexure_m\": <float, coordinate x of point of contraflexure (where M(x) = 0) between 0 and L in m>,\n  \"max_bending_stress_MPa\": <float, absolute maximum bending stress anywhere in the beam in MPa>,\n  \"max_deflection_mm\": <float, maximum downward deflection along the beam in mm>\n}\n```\n\nEnsure all units match the requested schema. Pure floating point numbers only.\n",
+    "raw_response": "The beam is a propped cantilever (fixed at A, roller at B) under a uniform load. Compatibility at B (zero deflection) gives R_B = 3wL/8, and the remaining reactions follow from equilibrium.\n\n**Reactions**\n- R_B = 3wL/8 = 3(12000)(4)/8 = 18000 N\n- R_A = 5wL/8 = 30000 N\n- M_A = wL\u00b2/8 = 24000 N\u00b7m (hogging)\n\n**Bending moment** (sagging positive): M(x) = \u221224000 + 30000x \u2212 6000x\u00b2\n- Maximum positive moment where dM/dx = 0: x = 2.5 m, M = 13500 N\u00b7m\n- Zero moment: x\u00b2 \u2212 5x + 4 = 0, so x = 1.0 m (the other root, x = 4 m, is the roller)\n\n**Stress:** S = bh\u00b2/6 = 6.667\u00d710\u207b\u2074 m\u00b3, so \u03c3_max = 24000 / 6.667\u00d710\u207b\u2074 = 36.0 MPa at the wall. The positive-moment peak gives only 20.25 MPa.\n\n**Deflection:** I = bh\u00b3/12 = 6.667\u00d710\u207b\u2075 m\u2074, EI = 1.3667\u00d710\u2077 N\u00b7m\u00b2. Integrating EI\u00b7y'' = M(x) with y(0) = y'(0) = y(4) = 0 gives EI\u00b7y = \u2212500x\u00b2(24 \u2212 10x + x\u00b2). The maximum deflection occurs at x \u2248 2.314 m, where |y| \u2248 1.2175 mm.\n\n```json\n{\n  \"roller_reaction_N\": 18000.0,\n  \"wall_vertical_reaction_N\": 30000.0,\n  \"wall_moment_Nm\": 24000.0,\n  \"x_max_positive_moment_m\": 2.5,\n  \"max_positive_moment_Nm\": 13500.0,\n  \"x_contraflexure_m\": 1.0,\n  \"max_bending_stress_MPa\": 36.0,\n  \"max_deflection_mm\": 1.22\n}\n```",
+    "parsed_json": {
+      "roller_reaction_N": 18000.0,
+      "wall_vertical_reaction_N": 30000.0,
+      "wall_moment_Nm": 24000.0,
+      "x_max_positive_moment_m": 2.5,
+      "max_positive_moment_Nm": 13500.0,
+      "x_contraflexure_m": 1.0,
+      "max_bending_stress_MPa": 36.0,
+      "max_deflection_mm": 1.22
+    },
+    "parse_success": true,
+    "latency_seconds": 11.993590831756592,
+    "prompt_tokens": 686,
+    "completion_tokens": 2665,
+    "estimated_cost_usd": 0.0014011,
+    "adapter_error": null,
+    "all_passed": false,
+    "score": 0.9,
+    "failure_reasons": [
+      "max_deflection_mm: candidate=1.22 mm, reference=1.0227152639581227 mm (Exceeds tolerance (rel_error: 19.2903%, allowed: 1.00%))"
+    ],
+    "parameter_results": [
+      {
+        "parameter": "roller_reaction_N",
+        "passed": true,
+        "candidate": 18000.0,
+        "reference": 18000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "wall_vertical_reaction_N",
+        "passed": true,
+        "candidate": 30000.0,
+        "reference": 30000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "wall_moment_Nm",
+        "passed": true,
+        "candidate": 24000.0,
+        "reference": 24000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N*m"
+      },
+      {
+        "parameter": "x_max_positive_moment_m",
+        "passed": true,
+        "candidate": 2.5,
+        "reference": 2.5,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m"
+      },
+      {
+        "parameter": "max_positive_moment_Nm",
+        "passed": true,
+        "candidate": 13500.0,
+        "reference": 13500.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N*m"
+      },
+      {
+        "parameter": "x_contraflexure_m",
+        "passed": true,
+        "candidate": 1.0,
+        "reference": 1.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m"
+      },
+      {
+        "parameter": "max_bending_stress_MPa",
+        "passed": true,
+        "candidate": 36.0,
+        "reference": 35.99999999999999,
+        "relative_error": 1.9737298215558342e-16,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "max_deflection_mm",
+        "passed": false,
+        "candidate": 1.22,
+        "reference": 1.0227152639581227,
+        "relative_error": 0.19290289584448353,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 19.2903%, allowed: 1.00%)",
+        "unit": "mm"
+      }
+    ]
+  },
+  {
+    "task_id": "task_003_boundary",
+    "task_title": "Statically Indeterminate Propped Cantilever Under Uniform Load",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 2,
+    "timestamp": 1794199392.1891918,
+    "prompt": "You are acting as a professional structural engineer.\nAnalyze the following statically indeterminate beam structure.\n\n### Beam Geometry, Boundary Conditions & Loading:\n- Span length: L = 4.0 m\n- Cross-section: Rectangular, width b = 0.1 m, height h = 0.2 m\n- Material: Structural Steel with Elastic Modulus E = 205.0 GPa\n- Support Conditions:\n  - At x = 0 (Left End A): Fully clamped/fixed support (zero deflection, zero slope).\n  - At x = L = 4.0 m (Right End B): Ideal roller/simple support (prevents vertical displacement, allows rotation).\n- Loading:\n  - A uniformly distributed downward load of w = 12000.0 N/m applied across the full span [0, L].\n\n### Required Deliverable:\nEnforce kinematic compatibility and static equilibrium to solve for the indeterminate reactions and internal bending moments.\nReturn your results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"roller_reaction_N\": <float, vertical reaction force at roller support B in N>,\n  \"wall_vertical_reaction_N\": <float, vertical reaction force at fixed wall A in N>,\n  \"wall_moment_Nm\": <float, magnitude of clamping moment at wall A in N*m>,\n  \"x_max_positive_moment_m\": <float, coordinate x where positive bending moment is maximum in m>,\n  \"max_positive_moment_Nm\": <float, maximum positive bending moment in N*m>,\n  \"x_contraflexure_m\": <float, coordinate x of point of contraflexure (where M(x) = 0) between 0 and L in m>,\n  \"max_bending_stress_MPa\": <float, absolute maximum bending stress anywhere in the beam in MPa>,\n  \"max_deflection_mm\": <float, maximum downward deflection along the beam in mm>\n}\n```\n\nEnsure all units match the requested schema. Pure floating point numbers only.\n",
+    "raw_response": "```json\n{\n  \"roller_reaction_N\": 18000.0,\n  \"wall_vertical_reaction_N\": 30000.0,\n  \"wall_moment_Nm\": 24000.0,\n  \"x_max_positive_moment_m\": 2.5,\n  \"max_positive_moment_Nm\": 13500.0,\n  \"x_contraflexure_m\": 1.0,\n  \"max_bending_stress_MPa\": 36.0,\n  \"max_deflection_mm\": 1.218\n}\n```\n\n**Basis of the results**\n\n- **Reactions:** The beam is propped (fixed at A, roller at B). Compatibility at B gives R_B = 3wL/8 = 18000 N. Equilibrium gives R_A = 5wL/8 = 30000 N. The wall moment is M_A = wL\u00b2/8 = 24000 N\u00b7m (hogging).\n- **Bending moment:** M(x) = \u221224000 + 30000x \u2212 6000x\u00b2 (sagging positive). The zeros are at x = 1 m and x = 4 m, so the contraflexure point is x = 1.0 m. The maximum sagging moment occurs where dM/dx = 0, at x = 2.5 m, giving M = 13500 N\u00b7m.\n- **Stress:** I = bh\u00b3/12 = 6.667\u00d710\u207b\u2075 m\u2074 and S = bh\u00b2/6 = 6.667\u00d710\u207b\u2074 m\u00b3. The peak stress is at the wall: 24000 / 6.667\u00d710\u207b\u2074 = 36 MPa.\n- **Deflection:** Integrating EI\u00b7v'' = M(x) with v(0) = v'(0) = 0 gives EI\u00b7v = \u2212500x\u00b2(x\u22124)(x\u22126). The maximum downward deflection occurs at x \u2248 2.314 m, with v \u2248 \u22121.218 mm (EI = 205\u00d710\u2079 \u00d7 6.667\u00d710\u207b\u2075 = 1.367\u00d710\u2077 N\u00b7m\u00b2).",
+    "parsed_json": {
+      "roller_reaction_N": 18000.0,
+      "wall_vertical_reaction_N": 30000.0,
+      "wall_moment_Nm": 24000.0,
+      "x_max_positive_moment_m": 2.5,
+      "max_positive_moment_Nm": 13500.0,
+      "x_contraflexure_m": 1.0,
+      "max_bending_stress_MPa": 36.0,
+      "max_deflection_mm": 1.218
+    },
+    "parse_success": true,
+    "latency_seconds": 10.834511518478394,
+    "prompt_tokens": 686,
+    "completion_tokens": 2410,
+    "estimated_cost_usd": 0.0012736,
+    "adapter_error": null,
+    "all_passed": false,
+    "score": 0.9,
+    "failure_reasons": [
+      "max_deflection_mm: candidate=1.218 mm, reference=1.0227152639581227 mm (Exceeds tolerance (rel_error: 19.0947%, allowed: 1.00%))"
+    ],
+    "parameter_results": [
+      {
+        "parameter": "roller_reaction_N",
+        "passed": true,
+        "candidate": 18000.0,
+        "reference": 18000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "wall_vertical_reaction_N",
+        "passed": true,
+        "candidate": 30000.0,
+        "reference": 30000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N"
+      },
+      {
+        "parameter": "wall_moment_Nm",
+        "passed": true,
+        "candidate": 24000.0,
+        "reference": 24000.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N*m"
+      },
+      {
+        "parameter": "x_max_positive_moment_m",
+        "passed": true,
+        "candidate": 2.5,
+        "reference": 2.5,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m"
+      },
+      {
+        "parameter": "max_positive_moment_Nm",
+        "passed": true,
+        "candidate": 13500.0,
+        "reference": 13500.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "N*m"
+      },
+      {
+        "parameter": "x_contraflexure_m",
+        "passed": true,
+        "candidate": 1.0,
+        "reference": 1.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "m"
+      },
+      {
+        "parameter": "max_bending_stress_MPa",
+        "passed": true,
+        "candidate": 36.0,
+        "reference": 35.99999999999999,
+        "relative_error": 1.9737298215558342e-16,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "max_deflection_mm",
+        "passed": false,
+        "candidate": 1.218,
+        "reference": 1.0227152639581227,
+        "relative_error": 0.1909473173267057,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 19.0947%, allowed: 1.00%)",
+        "unit": "mm"
+      }
+    ]
+  },
+  {
+    "task_id": "task_004_thermal",
+    "task_title": "Constrained Thermal Expansion of a Bar with Initial Clearance Gap",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 0,
+    "timestamp": 1794199403.0251923,
+    "prompt": "You are acting as a professional mechanical engineer.\nAnalyze the thermo-elastic response of the following constrained bar with an initial gap.\n\n### Geometry, Material & Operating Conditions:\n- The bar has length L = 1.5 m.\n- Cross-section is square: width b = 0.04 m, height h = 0.04 m.\n- Material: Stainless Steel 304\n  - Elastic Modulus: E = 193.0 GPa\n  - Linear Coefficient of Thermal Expansion: alpha = 1.7e-05 1/\u00b0C\n- Boundary Conditions:\n  - At x = 0: Clamped rigidly to an immovable wall.\n  - At x = L: There is an initial clearance gap of delta_0 = 1.2 mm between the end of the bar and an immovable rigid stop.\n- Temperature Conditions:\n  - Initial stress-free temperature: T0 = 20.0 \u00b0C\n  - Final uniform operating temperature: T_final = 110.0 \u00b0C\n\n### Required Deliverable:\nEvaluate whether the thermal expansion closes the gap and determine the mechanical state of the bar.\nReturn your results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"free_thermal_expansion_mm\": <float, hypothetical unconstrained thermal expansion in mm>,\n  \"temperature_to_close_gap_C\": <float, temperature T in \u00b0C at which the gap is exactly closed>,\n  \"actual_elongation_mm\": <float, actual physical elongation of the bar in mm at T_final>,\n  \"restrained_expansion_mm\": <float, elongation restrained by the rigid stop in mm>,\n  \"thermal_stress_MPa\": <float, magnitude of compressive thermal stress at T_final in MPa>,\n  \"reaction_force_N\": <float, magnitude of contact reaction force at the rigid stop in N>\n}\n```\n\nEnsure all units match the requested schema. Provide pure floating point values.\n",
+    "raw_response": "```json\n{\n  \"free_thermal_expansion_mm\": 2.295,\n  \"temperature_to_close_gap_C\": 67.06,\n  \"actual_elongation_mm\": 1.2,\n  \"restrained_expansion_mm\": 1.095,\n  \"thermal_stress_MPa\": 140.89,\n  \"reaction_force_N\": 225424.0\n}\n```\n\n**Basis of the calculation**\n\n- **Free expansion:** \u0394T = 110 \u2212 20 = 90 \u00b0C, so \u0394L_free = \u03b1L\u0394T = 1.7\u00d710\u207b\u2075 \u00d7 1.5 \u00d7 90 = 2.295 mm.\n- **Closing temperature:** The gap closes when \u03b1L\u0394T = 1.2 mm, so \u0394T = 1.2 / (1.7\u00d710\u207b\u2075 \u00d7 1.5) = 47.06 \u00b0C, giving T = 67.06 \u00b0C.\n- **Actual elongation:** The gap closes before T_final, so the bar can only grow by the 1.2 mm clearance before the rigid stop engages.\n- **Restrained expansion:** 2.295 \u2212 1.2 = 1.095 mm.\n- **Thermal stress:** The bar is compressed by the stop. The restrained strain is 1.095 mm / 1.5 m = 7.30\u00d710\u207b\u2074, so \u03c3 = E \u00d7 \u03b5 = 193,000 MPa \u00d7 7.30\u00d710\u207b\u2074 = 140.89 MPa (compressive).\n- **Reaction force:** A = 0.04 \u00d7 0.04 = 1.6\u00d710\u207b\u00b3 m\u00b2, so F = \u03c3A = 140.89\u00d710\u2076 \u00d7 1.6\u00d710\u207b\u00b3 \u2248 225,424 N.\n\n**Mechanical state:** At 110 \u00b0C the gap is closed, and the bar is in uniform axial compression (about 140.9 MPa) between the clamped wall and the rigid stop. The stop carries about 225 kN.",
+    "parsed_json": {
+      "free_thermal_expansion_mm": 2.295,
+      "temperature_to_close_gap_C": 67.06,
+      "actual_elongation_mm": 1.2,
+      "restrained_expansion_mm": 1.095,
+      "thermal_stress_MPa": 140.89,
+      "reaction_force_N": 225424.0
+    },
+    "parse_success": true,
+    "latency_seconds": 6.611086368560791,
+    "prompt_tokens": 665,
+    "completion_tokens": 1401,
+    "estimated_cost_usd": 0.000767,
+    "adapter_error": null,
+    "all_passed": false,
+    "score": 0.2027027027027027,
+    "failure_reasons": [
+      "free_thermal_expansion_mm: candidate=2.295 mm, reference=2.3354999999999997 mm (Exceeds tolerance (rel_error: 1.7341%, allowed: 1.00%))",
+      "temperature_to_close_gap_C: candidate=67.06 deg C, reference=66.24277456647398 deg C (Exceeds tolerance (rel_error: 1.2337%, allowed: 1.00%))",
+      "restrained_expansion_mm: candidate=1.095 mm, reference=1.1355 mm (Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%))",
+      "thermal_stress_MPa: candidate=140.89 MPa, reference=146.101 MPa (Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%))",
+      "reaction_force_N: candidate=225424.0 N, reference=233761.6 N (Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%))"
+    ],
+    "parameter_results": [
+      {
+        "parameter": "free_thermal_expansion_mm",
+        "passed": false,
+        "candidate": 2.295,
+        "reference": 2.3354999999999997,
+        "relative_error": 0.017341040462427643,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 1.7341%, allowed: 1.00%)",
+        "unit": "mm"
+      },
+      {
+        "parameter": "temperature_to_close_gap_C",
+        "passed": false,
+        "candidate": 67.06,
+        "reference": 66.24277456647398,
+        "relative_error": 0.012336823734729609,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 1.2337%, allowed: 1.00%)",
+        "unit": "deg C"
+      },
+      {
+        "parameter": "actual_elongation_mm",
+        "passed": true,
+        "candidate": 1.2,
+        "reference": 1.2,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "restrained_expansion_mm",
+        "passed": false,
+        "candidate": 1.095,
+        "reference": 1.1355,
+        "relative_error": 0.03566710700132099,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%)",
+        "unit": "mm"
+      },
+      {
+        "parameter": "thermal_stress_MPa",
+        "passed": false,
+        "candidate": 140.89,
+        "reference": 146.101,
+        "relative_error": 0.03566710700132109,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%)",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "reaction_force_N",
+        "passed": false,
+        "candidate": 225424.0,
+        "reference": 233761.6,
+        "relative_error": 0.03566710700132103,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%)",
+        "unit": "N"
+      }
+    ]
+  },
+  {
+    "task_id": "task_004_thermal",
+    "task_title": "Constrained Thermal Expansion of a Bar with Initial Clearance Gap",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 1,
+    "timestamp": 1794199409.638651,
+    "prompt": "You are acting as a professional mechanical engineer.\nAnalyze the thermo-elastic response of the following constrained bar with an initial gap.\n\n### Geometry, Material & Operating Conditions:\n- The bar has length L = 1.5 m.\n- Cross-section is square: width b = 0.04 m, height h = 0.04 m.\n- Material: Stainless Steel 304\n  - Elastic Modulus: E = 193.0 GPa\n  - Linear Coefficient of Thermal Expansion: alpha = 1.7e-05 1/\u00b0C\n- Boundary Conditions:\n  - At x = 0: Clamped rigidly to an immovable wall.\n  - At x = L: There is an initial clearance gap of delta_0 = 1.2 mm between the end of the bar and an immovable rigid stop.\n- Temperature Conditions:\n  - Initial stress-free temperature: T0 = 20.0 \u00b0C\n  - Final uniform operating temperature: T_final = 110.0 \u00b0C\n\n### Required Deliverable:\nEvaluate whether the thermal expansion closes the gap and determine the mechanical state of the bar.\nReturn your results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"free_thermal_expansion_mm\": <float, hypothetical unconstrained thermal expansion in mm>,\n  \"temperature_to_close_gap_C\": <float, temperature T in \u00b0C at which the gap is exactly closed>,\n  \"actual_elongation_mm\": <float, actual physical elongation of the bar in mm at T_final>,\n  \"restrained_expansion_mm\": <float, elongation restrained by the rigid stop in mm>,\n  \"thermal_stress_MPa\": <float, magnitude of compressive thermal stress at T_final in MPa>,\n  \"reaction_force_N\": <float, magnitude of contact reaction force at the rigid stop in N>\n}\n```\n\nEnsure all units match the requested schema. Provide pure floating point values.\n",
+    "raw_response": "```json\n{\n  \"free_thermal_expansion_mm\": 2.295,\n  \"temperature_to_close_gap_C\": 67.0588,\n  \"actual_elongation_mm\": 1.2,\n  \"restrained_expansion_mm\": 1.095,\n  \"thermal_stress_MPa\": 140.89,\n  \"reaction_force_N\": 225424.0\n}\n```",
+    "parsed_json": {
+      "free_thermal_expansion_mm": 2.295,
+      "temperature_to_close_gap_C": 67.0588,
+      "actual_elongation_mm": 1.2,
+      "restrained_expansion_mm": 1.095,
+      "thermal_stress_MPa": 140.89,
+      "reaction_force_N": 225424.0
+    },
+    "parse_success": true,
+    "latency_seconds": 4.026836156845093,
+    "prompt_tokens": 665,
+    "completion_tokens": 772,
+    "estimated_cost_usd": 0.0004525,
+    "adapter_error": null,
+    "all_passed": false,
+    "score": 0.2027027027027027,
+    "failure_reasons": [
+      "free_thermal_expansion_mm: candidate=2.295 mm, reference=2.3354999999999997 mm (Exceeds tolerance (rel_error: 1.7341%, allowed: 1.00%))",
+      "temperature_to_close_gap_C: candidate=67.0588 deg C, reference=66.24277456647398 deg C (Exceeds tolerance (rel_error: 1.2319%, allowed: 1.00%))",
+      "restrained_expansion_mm: candidate=1.095 mm, reference=1.1355 mm (Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%))",
+      "thermal_stress_MPa: candidate=140.89 MPa, reference=146.101 MPa (Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%))",
+      "reaction_force_N: candidate=225424.0 N, reference=233761.6 N (Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%))"
+    ],
+    "parameter_results": [
+      {
+        "parameter": "free_thermal_expansion_mm",
+        "passed": false,
+        "candidate": 2.295,
+        "reference": 2.3354999999999997,
+        "relative_error": 0.017341040462427643,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 1.7341%, allowed: 1.00%)",
+        "unit": "mm"
+      },
+      {
+        "parameter": "temperature_to_close_gap_C",
+        "passed": false,
+        "candidate": 67.0588,
+        "reference": 66.24277456647398,
+        "relative_error": 0.012318708551483579,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 1.2319%, allowed: 1.00%)",
+        "unit": "deg C"
+      },
+      {
+        "parameter": "actual_elongation_mm",
+        "passed": true,
+        "candidate": 1.2,
+        "reference": 1.2,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "restrained_expansion_mm",
+        "passed": false,
+        "candidate": 1.095,
+        "reference": 1.1355,
+        "relative_error": 0.03566710700132099,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%)",
+        "unit": "mm"
+      },
+      {
+        "parameter": "thermal_stress_MPa",
+        "passed": false,
+        "candidate": 140.89,
+        "reference": 146.101,
+        "relative_error": 0.03566710700132109,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%)",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "reaction_force_N",
+        "passed": false,
+        "candidate": 225424.0,
+        "reference": 233761.6,
+        "relative_error": 0.03566710700132103,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%)",
+        "unit": "N"
+      }
+    ]
+  },
+  {
+    "task_id": "task_004_thermal",
+    "task_title": "Constrained Thermal Expansion of a Bar with Initial Clearance Gap",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 2,
+    "timestamp": 1794199413.6720464,
+    "prompt": "You are acting as a professional mechanical engineer.\nAnalyze the thermo-elastic response of the following constrained bar with an initial gap.\n\n### Geometry, Material & Operating Conditions:\n- The bar has length L = 1.5 m.\n- Cross-section is square: width b = 0.04 m, height h = 0.04 m.\n- Material: Stainless Steel 304\n  - Elastic Modulus: E = 193.0 GPa\n  - Linear Coefficient of Thermal Expansion: alpha = 1.7e-05 1/\u00b0C\n- Boundary Conditions:\n  - At x = 0: Clamped rigidly to an immovable wall.\n  - At x = L: There is an initial clearance gap of delta_0 = 1.2 mm between the end of the bar and an immovable rigid stop.\n- Temperature Conditions:\n  - Initial stress-free temperature: T0 = 20.0 \u00b0C\n  - Final uniform operating temperature: T_final = 110.0 \u00b0C\n\n### Required Deliverable:\nEvaluate whether the thermal expansion closes the gap and determine the mechanical state of the bar.\nReturn your results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"free_thermal_expansion_mm\": <float, hypothetical unconstrained thermal expansion in mm>,\n  \"temperature_to_close_gap_C\": <float, temperature T in \u00b0C at which the gap is exactly closed>,\n  \"actual_elongation_mm\": <float, actual physical elongation of the bar in mm at T_final>,\n  \"restrained_expansion_mm\": <float, elongation restrained by the rigid stop in mm>,\n  \"thermal_stress_MPa\": <float, magnitude of compressive thermal stress at T_final in MPa>,\n  \"reaction_force_N\": <float, magnitude of contact reaction force at the rigid stop in N>\n}\n```\n\nEnsure all units match the requested schema. Provide pure floating point values.\n",
+    "raw_response": "The thermal expansion closes the gap. At 110 \u00b0C the bar is pressed against the rigid stop in compression, with the stop supplying the reaction force.\n\n```json\n{\n  \"free_thermal_expansion_mm\": 2.295,\n  \"temperature_to_close_gap_C\": 67.0588,\n  \"actual_elongation_mm\": 1.2,\n  \"restrained_expansion_mm\": 1.095,\n  \"thermal_stress_MPa\": 140.89,\n  \"reaction_force_N\": 225424.0\n}\n```\n\n**Basis of the calculation**\n\n- **Free expansion:** \u0394T = 110 \u2212 20 = 90 K, so \u03b4_free = \u03b1L\u0394T = 1.7\u00d710\u207b\u2075 \u00d7 1.5 \u00d7 90 = 2.295 mm.\n- **Gap-closing temperature:** \u0394T_gap = \u03b4\u2080/(\u03b1L) = 1.2 / (1.7\u00d710\u207b\u2075 \u00d7 1500 mm) = 47.06 K, so T = 20 + 47.06 = 67.06 \u00b0C.\n- **Actual elongation:** Once the gap closes, the stop limits the elongation to \u03b4\u2080 = 1.2 mm.\n- **Restrained expansion:** \u03b4_restrained = \u03b4_free \u2212 \u03b4\u2080 = 2.295 \u2212 1.2 = 1.095 mm.\n- **Thermal stress:** The mechanical strain is 1.095 mm / 1500 mm = 7.3\u00d710\u207b\u2074 (compressive). \u03c3 = E\u03b5 = 193\u00d710\u2079 \u00d7 7.3\u00d710\u207b\u2074 = 140.89 MPa.\n- **Reaction force:** A = 0.04 \u00d7 0.04 = 1.6\u00d710\u207b\u00b3 m\u00b2, so F = \u03c3A = 140.89\u00d710\u2076 \u00d7 1.6\u00d710\u207b\u00b3 = 225,424 N.",
+    "parsed_json": {
+      "free_thermal_expansion_mm": 2.295,
+      "temperature_to_close_gap_C": 67.0588,
+      "actual_elongation_mm": 1.2,
+      "restrained_expansion_mm": 1.095,
+      "thermal_stress_MPa": 140.89,
+      "reaction_force_N": 225424.0
+    },
+    "parse_success": true,
+    "latency_seconds": 6.911071300506592,
+    "prompt_tokens": 665,
+    "completion_tokens": 1170,
+    "estimated_cost_usd": 0.0006515000000000001,
+    "adapter_error": null,
+    "all_passed": false,
+    "score": 0.2027027027027027,
+    "failure_reasons": [
+      "free_thermal_expansion_mm: candidate=2.295 mm, reference=2.3354999999999997 mm (Exceeds tolerance (rel_error: 1.7341%, allowed: 1.00%))",
+      "temperature_to_close_gap_C: candidate=67.0588 deg C, reference=66.24277456647398 deg C (Exceeds tolerance (rel_error: 1.2319%, allowed: 1.00%))",
+      "restrained_expansion_mm: candidate=1.095 mm, reference=1.1355 mm (Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%))",
+      "thermal_stress_MPa: candidate=140.89 MPa, reference=146.101 MPa (Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%))",
+      "reaction_force_N: candidate=225424.0 N, reference=233761.6 N (Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%))"
+    ],
+    "parameter_results": [
+      {
+        "parameter": "free_thermal_expansion_mm",
+        "passed": false,
+        "candidate": 2.295,
+        "reference": 2.3354999999999997,
+        "relative_error": 0.017341040462427643,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 1.7341%, allowed: 1.00%)",
+        "unit": "mm"
+      },
+      {
+        "parameter": "temperature_to_close_gap_C",
+        "passed": false,
+        "candidate": 67.0588,
+        "reference": 66.24277456647398,
+        "relative_error": 0.012318708551483579,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 1.2319%, allowed: 1.00%)",
+        "unit": "deg C"
+      },
+      {
+        "parameter": "actual_elongation_mm",
+        "passed": true,
+        "candidate": 1.2,
+        "reference": 1.2,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "restrained_expansion_mm",
+        "passed": false,
+        "candidate": 1.095,
+        "reference": 1.1355,
+        "relative_error": 0.03566710700132099,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%)",
+        "unit": "mm"
+      },
+      {
+        "parameter": "thermal_stress_MPa",
+        "passed": false,
+        "candidate": 140.89,
+        "reference": 146.101,
+        "relative_error": 0.03566710700132109,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%)",
+        "unit": "MPa"
+      },
+      {
+        "parameter": "reaction_force_N",
+        "passed": false,
+        "candidate": 225424.0,
+        "reference": 233761.6,
+        "relative_error": 0.03566710700132103,
+        "rel_tol": 0.01,
+        "message": "Exceeds tolerance (rel_error: 3.5667%, allowed: 1.00%)",
+        "unit": "N"
+      }
+    ]
+  },
+  {
+    "task_id": "task_005_convergence",
+    "task_title": "Finite Element Mesh Convergence and Discretization Error Analysis",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 0,
+    "timestamp": 1794199420.5847187,
+    "prompt": "You are acting as a computational mechanics & simulation verification engineer.\nPerform a mesh convergence and discretization error verification study in accordance with ASME V&V 20 standards.\n\n### Simulation Data:\nA finite element model was solved across three systematically refined grid levels with a constant refinement ratio r = 2.0:\n- Mesh 1 (Coarse, h1 = 40.0 mm): Tip displacement f1 = 18.24 mm\n- Mesh 2 (Medium, h2 = 20.0 mm): Tip displacement f2 = 19.68 mm\n- Mesh 3 (Fine,   h3 = 10.0 mm): Tip displacement f3 = 20.04 mm\n\nAdditionally, a local stress study at an internal 90-degree sharp re-entrant re-entrant corner (notch radius r = 0 mm) yielded the following peak Von Mises stresses:\n- Mesh 1 (h = 40.0 mm): 180.0 MPa\n- Mesh 2 (h = 20.0 mm): 295.0 MPa\n- Mesh 3 (h = 10.0 mm): 470.0 MPa\n\n### Required Deliverable:\n1. Compute the apparent order of convergence `p` using the three grid solutions.\n2. Calculate the Richardson extrapolated continuum value as grid spacing h -> 0 (`extrapolated_value`).\n3. Compute the relative discretization error percentage on the fine mesh (`fine_mesh_discretization_error_percent`).\n4. Calculate the Grid Convergence Index for the fine mesh (`grid_convergence_index_gci_percent`) using ASME safety factor F_s = 1.25.\n5. Determine whether the stress at the re-entrant sharp corner is a non-converging mathematical stress singularity (`is_sharp_corner_singular`: 1 for Yes, 0 for No).\n\nReturn your numerical results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"apparent_order_p\": <float, apparent order of convergence p>,\n  \"extrapolated_value\": <float, Richardson extrapolated zero-grid displacement in mm>,\n  \"fine_mesh_discretization_error_percent\": <float, fine mesh relative error in percent %>,\n  \"grid_convergence_index_gci_percent\": <float, fine mesh GCI in percent %>,\n  \"is_sharp_corner_singular\": <float or int, 1 if the sharp corner is an unbounded singularity, 0 if it physically converges>\n}\n```\n\nProvide pure numerical floating point values only.\n",
+    "raw_response": "The displacement data converge cleanly, with observed order p = 2.0. The stress at the sharp corner does not converge, so the corner is a singularity.\n\n**Apparent order:** e\u2082\u2081 = 19.68 \u2212 18.24 = 1.44 and e\u2083\u2082 = 20.04 \u2212 19.68 = 0.36. The ratio e\u2083\u2082/e\u2082\u2081 = 0.25, so p = ln(0.25)/ln(2) = 2.0.\n\n**Richardson extrapolation:** f_ext = f\u2083 + (f\u2083 \u2212 f\u2082)/(r^p \u2212 1) = 20.04 + 0.36/3 = 20.16 mm.\n\n**Fine-mesh discretization error:** |f\u2083 \u2212 f_ext|/|f_ext| \u00d7 100 = 0.12/20.16 \u00d7 100 \u2248 0.595%.\n\n**Fine-mesh GCI:** Fs\u00b7|\u03b5\u2083\u2082|/(r^p \u2212 1), where \u03b5\u2083\u2082 = 0.36/20.04 \u2248 0.01796. This gives 1.25 \u00d7 0.01796/3 \u2248 0.7485%.\n\n**Sharp corner:** the peak stresses rise 180 \u2192 295 \u2192 470 MPa, with the increments growing each refinement and no sign of levelling off. This is consistent with an unbounded stress singularity at a zero-radius re-entrant corner, so the flag is 1.\n\n```json\n{\n  \"apparent_order_p\": 2.0,\n  \"extrapolated_value\": 20.16,\n  \"fine_mesh_discretization_error_percent\": 0.5952,\n  \"grid_convergence_index_gci_percent\": 0.7485,\n  \"is_sharp_corner_singular\": 1\n}\n```",
+    "parsed_json": {
+      "apparent_order_p": 2.0,
+      "extrapolated_value": 20.16,
+      "fine_mesh_discretization_error_percent": 0.5952,
+      "grid_convergence_index_gci_percent": 0.7485,
+      "is_sharp_corner_singular": 1
+    },
+    "parse_success": true,
+    "latency_seconds": 4.8071863651275635,
+    "prompt_tokens": 875,
+    "completion_tokens": 1091,
+    "estimated_cost_usd": 0.000633,
+    "adapter_error": null,
+    "all_passed": true,
+    "score": 1.0,
+    "failure_reasons": [],
+    "parameter_results": [
+      {
+        "parameter": "apparent_order_p",
+        "passed": true,
+        "candidate": 2.0,
+        "reference": 2.0000000000000036,
+        "relative_error": 1.7763568394002473e-15,
+        "rel_tol": 0.02,
+        "message": "Within tolerance",
+        "unit": "dimensionless"
+      },
+      {
+        "parameter": "extrapolated_value",
+        "passed": true,
+        "candidate": 20.16,
+        "reference": 20.16,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "fine_mesh_discretization_error_percent",
+        "passed": true,
+        "candidate": 0.5952,
+        "reference": 0.5952380952381001,
+        "relative_error": 6.400000000827913e-05,
+        "rel_tol": 0.03,
+        "message": "Within tolerance",
+        "unit": "%"
+      },
+      {
+        "parameter": "grid_convergence_index_gci_percent",
+        "passed": true,
+        "candidate": 0.7485,
+        "reference": 0.7485029940119725,
+        "relative_error": 3.999999995202526e-06,
+        "rel_tol": 0.03,
+        "message": "Within tolerance",
+        "unit": "%"
+      },
+      {
+        "parameter": "is_sharp_corner_singular",
+        "passed": true,
+        "candidate": 1.0,
+        "reference": 1.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.001,
+        "message": "Within tolerance",
+        "unit": "binary (0 or 1)"
+      }
+    ]
+  },
+  {
+    "task_id": "task_005_convergence",
+    "task_title": "Finite Element Mesh Convergence and Discretization Error Analysis",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 1,
+    "timestamp": 1794199425.3944302,
+    "prompt": "You are acting as a computational mechanics & simulation verification engineer.\nPerform a mesh convergence and discretization error verification study in accordance with ASME V&V 20 standards.\n\n### Simulation Data:\nA finite element model was solved across three systematically refined grid levels with a constant refinement ratio r = 2.0:\n- Mesh 1 (Coarse, h1 = 40.0 mm): Tip displacement f1 = 18.24 mm\n- Mesh 2 (Medium, h2 = 20.0 mm): Tip displacement f2 = 19.68 mm\n- Mesh 3 (Fine,   h3 = 10.0 mm): Tip displacement f3 = 20.04 mm\n\nAdditionally, a local stress study at an internal 90-degree sharp re-entrant re-entrant corner (notch radius r = 0 mm) yielded the following peak Von Mises stresses:\n- Mesh 1 (h = 40.0 mm): 180.0 MPa\n- Mesh 2 (h = 20.0 mm): 295.0 MPa\n- Mesh 3 (h = 10.0 mm): 470.0 MPa\n\n### Required Deliverable:\n1. Compute the apparent order of convergence `p` using the three grid solutions.\n2. Calculate the Richardson extrapolated continuum value as grid spacing h -> 0 (`extrapolated_value`).\n3. Compute the relative discretization error percentage on the fine mesh (`fine_mesh_discretization_error_percent`).\n4. Calculate the Grid Convergence Index for the fine mesh (`grid_convergence_index_gci_percent`) using ASME safety factor F_s = 1.25.\n5. Determine whether the stress at the re-entrant sharp corner is a non-converging mathematical stress singularity (`is_sharp_corner_singular`: 1 for Yes, 0 for No).\n\nReturn your numerical results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"apparent_order_p\": <float, apparent order of convergence p>,\n  \"extrapolated_value\": <float, Richardson extrapolated zero-grid displacement in mm>,\n  \"fine_mesh_discretization_error_percent\": <float, fine mesh relative error in percent %>,\n  \"grid_convergence_index_gci_percent\": <float, fine mesh GCI in percent %>,\n  \"is_sharp_corner_singular\": <float or int, 1 if the sharp corner is an unbounded singularity, 0 if it physically converges>\n}\n```\n\nProvide pure numerical floating point values only.\n",
+    "raw_response": "```json\n{\n  \"apparent_order_p\": 2.0,\n  \"extrapolated_value\": 20.16,\n  \"fine_mesh_discretization_error_percent\": 0.5952,\n  \"grid_convergence_index_gci_percent\": 0.7485,\n  \"is_sharp_corner_singular\": 1\n}\n```",
+    "parsed_json": {
+      "apparent_order_p": 2.0,
+      "extrapolated_value": 20.16,
+      "fine_mesh_discretization_error_percent": 0.5952,
+      "grid_convergence_index_gci_percent": 0.7485,
+      "is_sharp_corner_singular": 1
+    },
+    "parse_success": true,
+    "latency_seconds": 3.7505757808685303,
+    "prompt_tokens": 875,
+    "completion_tokens": 759,
+    "estimated_cost_usd": 0.000467,
+    "adapter_error": null,
+    "all_passed": true,
+    "score": 1.0,
+    "failure_reasons": [],
+    "parameter_results": [
+      {
+        "parameter": "apparent_order_p",
+        "passed": true,
+        "candidate": 2.0,
+        "reference": 2.0000000000000036,
+        "relative_error": 1.7763568394002473e-15,
+        "rel_tol": 0.02,
+        "message": "Within tolerance",
+        "unit": "dimensionless"
+      },
+      {
+        "parameter": "extrapolated_value",
+        "passed": true,
+        "candidate": 20.16,
+        "reference": 20.16,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "fine_mesh_discretization_error_percent",
+        "passed": true,
+        "candidate": 0.5952,
+        "reference": 0.5952380952381001,
+        "relative_error": 6.400000000827913e-05,
+        "rel_tol": 0.03,
+        "message": "Within tolerance",
+        "unit": "%"
+      },
+      {
+        "parameter": "grid_convergence_index_gci_percent",
+        "passed": true,
+        "candidate": 0.7485,
+        "reference": 0.7485029940119725,
+        "relative_error": 3.999999995202526e-06,
+        "rel_tol": 0.03,
+        "message": "Within tolerance",
+        "unit": "%"
+      },
+      {
+        "parameter": "is_sharp_corner_singular",
+        "passed": true,
+        "candidate": 1.0,
+        "reference": 1.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.001,
+        "message": "Within tolerance",
+        "unit": "binary (0 or 1)"
+      }
+    ]
+  },
+  {
+    "task_id": "task_005_convergence",
+    "task_title": "Finite Element Mesh Convergence and Discretization Error Analysis",
+    "model_name": "anthropic/claude-haiku-5.5",
+    "trial_index": 2,
+    "timestamp": 1794199429.1467814,
+    "prompt": "You are acting as a computational mechanics & simulation verification engineer.\nPerform a mesh convergence and discretization error verification study in accordance with ASME V&V 20 standards.\n\n### Simulation Data:\nA finite element model was solved across three systematically refined grid levels with a constant refinement ratio r = 2.0:\n- Mesh 1 (Coarse, h1 = 40.0 mm): Tip displacement f1 = 18.24 mm\n- Mesh 2 (Medium, h2 = 20.0 mm): Tip displacement f2 = 19.68 mm\n- Mesh 3 (Fine,   h3 = 10.0 mm): Tip displacement f3 = 20.04 mm\n\nAdditionally, a local stress study at an internal 90-degree sharp re-entrant re-entrant corner (notch radius r = 0 mm) yielded the following peak Von Mises stresses:\n- Mesh 1 (h = 40.0 mm): 180.0 MPa\n- Mesh 2 (h = 20.0 mm): 295.0 MPa\n- Mesh 3 (h = 10.0 mm): 470.0 MPa\n\n### Required Deliverable:\n1. Compute the apparent order of convergence `p` using the three grid solutions.\n2. Calculate the Richardson extrapolated continuum value as grid spacing h -> 0 (`extrapolated_value`).\n3. Compute the relative discretization error percentage on the fine mesh (`fine_mesh_discretization_error_percent`).\n4. Calculate the Grid Convergence Index for the fine mesh (`grid_convergence_index_gci_percent`) using ASME safety factor F_s = 1.25.\n5. Determine whether the stress at the re-entrant sharp corner is a non-converging mathematical stress singularity (`is_sharp_corner_singular`: 1 for Yes, 0 for No).\n\nReturn your numerical results strictly in a JSON code block formatted exactly as shown below:\n\n```json\n{\n  \"apparent_order_p\": <float, apparent order of convergence p>,\n  \"extrapolated_value\": <float, Richardson extrapolated zero-grid displacement in mm>,\n  \"fine_mesh_discretization_error_percent\": <float, fine mesh relative error in percent %>,\n  \"grid_convergence_index_gci_percent\": <float, fine mesh GCI in percent %>,\n  \"is_sharp_corner_singular\": <float or int, 1 if the sharp corner is an unbounded singularity, 0 if it physically converges>\n}\n```\n\nProvide pure numerical floating point values only.\n",
+    "raw_response": "```json\n{\n  \"apparent_order_p\": 2.0,\n  \"extrapolated_value\": 20.16,\n  \"fine_mesh_discretization_error_percent\": 0.5952,\n  \"grid_convergence_index_gci_percent\": 0.7485,\n  \"is_sharp_corner_singular\": 1\n}\n```",
+    "parsed_json": {
+      "apparent_order_p": 2.0,
+      "extrapolated_value": 20.16,
+      "fine_mesh_discretization_error_percent": 0.5952,
+      "grid_convergence_index_gci_percent": 0.7485,
+      "is_sharp_corner_singular": 1
+    },
+    "parse_success": true,
+    "latency_seconds": 5.011451721191406,
+    "prompt_tokens": 875,
+    "completion_tokens": 644,
+    "estimated_cost_usd": 0.0004095,
+    "adapter_error": null,
+    "all_passed": true,
+    "score": 1.0,
+    "failure_reasons": [],
+    "parameter_results": [
+      {
+        "parameter": "apparent_order_p",
+        "passed": true,
+        "candidate": 2.0,
+        "reference": 2.0000000000000036,
+        "relative_error": 1.7763568394002473e-15,
+        "rel_tol": 0.02,
+        "message": "Within tolerance",
+        "unit": "dimensionless"
+      },
+      {
+        "parameter": "extrapolated_value",
+        "passed": true,
+        "candidate": 20.16,
+        "reference": 20.16,
+        "relative_error": 0.0,
+        "rel_tol": 0.01,
+        "message": "Within tolerance",
+        "unit": "mm"
+      },
+      {
+        "parameter": "fine_mesh_discretization_error_percent",
+        "passed": true,
+        "candidate": 0.5952,
+        "reference": 0.5952380952381001,
+        "relative_error": 6.400000000827913e-05,
+        "rel_tol": 0.03,
+        "message": "Within tolerance",
+        "unit": "%"
+      },
+      {
+        "parameter": "grid_convergence_index_gci_percent",
+        "passed": true,
+        "candidate": 0.7485,
+        "reference": 0.7485029940119725,
+        "relative_error": 3.999999995202526e-06,
+        "rel_tol": 0.03,
+        "message": "Within tolerance",
+        "unit": "%"
+      },
+      {
+        "parameter": "is_sharp_corner_singular",
+        "passed": true,
+        "candidate": 1.0,
+        "reference": 1.0,
+        "relative_error": 0.0,
+        "rel_tol": 0.001,
+        "message": "Within tolerance",
+        "unit": "binary (0 or 1)"
+      }
+    ]
+  }
+]

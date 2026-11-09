@@ -1,0 +1,43 @@
+{
+  "endpoint": "https://inference-api.nousresearch.com/v1",
+  "catalogue_url": "https://inference-api.nousresearch.com/v1/models",
+  "models": [
+    "openai/gpt-6-luna",
+    "deepseek/deepseek-v4.1-flash",
+    "z-ai/glm-5.3-flash",
+    "anthropic/claude-haiku-5.5"
+  ],
+  "labels": {
+    "openai/gpt-6-luna": "GPT-6 Luna",
+    "deepseek/deepseek-v4.1-flash": "DeepSeek 4.1 Flash",
+    "z-ai/glm-5.3-flash": "GLM 5.3 Flash",
+    "anthropic/claude-haiku-5.5": "Haiku 5.5"
+  },
+  "trials_per_task": 3,
+  "tasks": [
+    "task_001_cantilever",
+    "task_002_axial",
+    "task_003_boundary",
+    "task_004_thermal",
+    "task_005_convergence"
+  ],
+  "pricing_usd_per_token": {
+    "openai/gpt-6-luna": [
+      1e-07,
+      5e-07
+    ],
+    "deepseek/deepseek-v4.1-flash": [
+      1.06e-07,
+      5.13e-07
+    ],
+    "z-ai/glm-5.3-flash": [
+      1.2e-07,
+      4e-07
+    ],
+    "anthropic/claude-haiku-5.5": [
+      1e-07,
+      5e-07
+    ]
+  },
+  "generated_at_utc": "2026-11-09T04:43:54.662615+00:00"
+}

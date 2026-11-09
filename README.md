@@ -169,24 +169,98 @@ request time — aborts the run instead of being scored as the model failing the
 ---
 
 ## 11. Empirical Results Summary
-> **Pending re-run:** results are being regenerated from live API trials with the models in Section 10. The previous table (GPT-4o / Claude 3.5 Sonnet) has been retired and must not be cited. This section is updated by `experiments/run_experiment.py` output and `reports/benchmark_report.md`.
+
+Live trials: **4 models × 5 tasks × 3 trials = 60 calls**, temperature 0.2, endpoint
+`https://inference-api.nousresearch.com/v1` (OpenAI-compatible; prices read from that endpoint's
+own catalogue). Run provenance — endpoint, roster, prices, timestamp — is written to
+`results/run_environment.json`, and every figure below is reproduced by
+`python reports/generate_report.py` from `results/summary.csv` and `results/raw/*.json`.
+
+| Model | Trials | Passed | Pass rate | pass@k | pass^k | Mean score | Mean latency | Recorded cost |
+|---|---|---|---|---|---|---|---|---|
+| GPT-6 Luna (`openai/gpt-6-luna`) | 15 | 9 | 60.0% | 60% | 60% | 80.7% | 9.2 s | $0.0073 |
+| DeepSeek 4.1 Flash (`deepseek/deepseek-v4.1-flash`) | 15 | 9 | 60.0% | 60% | 60% | 82.1% | 67.4 s | $0.0563 |
+| Haiku 5.5 (`anthropic/claude-haiku-5.5`) | 15 | 9 | 60.0% | 60% | 60% | 82.1% | 8.3 s | $0.0146 |
+| GLM 5.3 Flash (`z-ai/glm-5.3-flash`) | 15 | 5 | 33.3% | 40% | 20% | 66.3% | 101.3 s | $0.0393 |
+
+Definitions: pass rate = trials passed / trials run; pass@k = share of tasks with at least one
+passing trial; pass^k = share of tasks where every trial passed. Total recorded spend for all 60
+calls: **$0.1174**.
+
+Per task (passed / 3 trials):
+
+| Task | GPT-6 Luna | DeepSeek 4.1 Flash | GLM 5.3 Flash | Haiku 5.5 |
+|---|---|---|---|---|
+| 1 · Cantilever under point load + self-weight | 3/3 | 3/3 | 2/3 | 3/3 |
+| 2 · Stepped axial bar under intermediate load | 3/3 | 3/3 | 3/3 | 3/3 |
+| 3 · Statically indeterminate propped cantilever | 0/3 | 0/3 | 0/3 | 0/3 |
+| 4 · Constrained thermal expansion vs. clearance gap | 0/3 | 0/3 | 0/3 | 0/3 |
+| 5 · FEA mesh convergence / singularity detection | 3/3 | 3/3 | 0/3 \* | 3/3 |
+
+\* GLM 5.3 Flash at task 5: two of the three trials exceeded the 420 s read timeout — a harness
+transport failure, not model reasoning — and the third failed the grader at a 27.5% mean score.
 
 ---
 
 ## 12. In-Depth Performance Analysis
-> **Pending re-run** with the Section 10 roster. The analysis below is rewritten from the new trial transcripts once `python experiments/run_experiment.py --trials 3` completes.
+
+**Two tasks are failed by every model, in every trial.** Across all four models, task 3 (propped
+cantilever) and task 4 (thermal expansion against a gap) are **0/12 trials each**. The failing
+checks are specific rather than diffuse: `reaction_force_N`, `max_positive_moment_Nm` and
+`max_deflection_mm` on task 3; `free_thermal_expansion_mm`, `temperature_to_close_gap_C`,
+`restrained_expansion_mm` and `thermal_stress_MPa` on task 4.
+
+**The thermal failures share one signature.** All four models under-predict every *restrained*
+quantity in task 4 by the same small margin — in the trials sampled, GPT-6 Luna returns restrained
+expansion 1.095 mm vs a 1.135 mm reference, thermal stress 140.89 MPa vs 146.10 MPa and reaction
+225.4 kN vs 233.8 kN: **3.57% low on all three**, against a 1% tolerance. One rounded material
+constant reproduces that pattern across force, stress and displacement simultaneously; a wrong
+governing model does not. The same models get the *unconstrained* elongation right
+(`actual_elongation_mm`, 0.0% relative error, check passed) and lose the task on the quantities
+that depend on the elastic constant once the gap closes.
+
+**Task 3 is a failure of method, not arithmetic.** Every attempt reports reactions close to the
+simply-supported split instead of solving the compatibility equation, which is why the moment and
+deflection checks fail together while the determinate axial task in the same family passes 3/3.
+
+**Consistency is binary on this roster, not probabilistic.** For GPT-6 Luna, DeepSeek 4.1 Flash and
+Haiku 5.5, pass@k = pass^k = 60%: every trial on tasks 1, 2 and 5 passes, every trial on tasks 3
+and 4 fails. No model is lucky once and wrong the next time on the same task — MechEval separates
+capability from sampling, and nothing here sits in between. GLM 5.3 Flash is the exception
+(pass@k 40% vs pass^k 20%), driven by task 1 (2/3) and the timed-out task 5 trials.
+
+**Accuracy does not track speed or price.** Haiku 5.5 (8.3 s mean, $0.0146) matches DeepSeek 4.1
+Flash (67.4 s, $0.0563) and GPT-6 Luna (9.2 s, $0.0073) on every task boundary, while GLM 5.3
+Flash is both the slowest (101.3 s mean, two 420 s timeouts) and the weakest (33.3% pass rate).
 
 ---
 
 ## 13. Runtime and Inference Cost
-- **Benchmark Runtime**: roughly 2–5 minutes for all live API trials (60 s per-request timeout).
-- **Inference Cost**: with the Section 10 flash-class roster, well under **$1 USD** for the full 3-trial run (tracked per-request by the runner and reported in `results/summary.csv`).
+
+Measured on the run in Section 11 (60 live calls, 4 models × 5 tasks × 3 trials):
+
+| Model | Wall-clock, 15 trials | Mean latency | Recorded cost |
+|---|---|---|---|
+| Haiku 5.5 | 124.4 s | 8.3 s | $0.0146 |
+| GPT-6 Luna | 138.2 s | 9.2 s | $0.0073 |
+| DeepSeek 4.1 Flash | 1011.0 s | 67.4 s | $0.0563 |
+| GLM 5.3 Flash | 1520.1 s | 101.3 s | $0.0393 |
+| **Total** | **~46.6 min** | — | **$0.1174** |
+
+- Cost is computed per call from the endpoint's published price for the model actually called; the
+  price table used is recorded in `results/run_environment.json`. No per-1M constants are hardcoded.
+- Read timeout is 300 s by default, 420 s for this run (`MECHEVAL_TIMEOUT`); two GLM 5.3 Flash
+  trials still exceeded it and are recorded as adapter errors in `results/raw/`.
+- Wall-clock is dominated by two models: DeepSeek 4.1 Flash and GLM 5.3 Flash account for ~91% of
+  the sweep duration and ~81% of its spend.
 
 ---
 
 ## 14. Known Limitations
 - MechEval focuses on 1D and 2D mechanics of materials, thermo-elasticity, and finite element verification. It does not evaluate 3D non-linear plasticity, contact friction formulations, or dynamic transient shock loading.
 - Closed-form analytical comparisons are restricted to prismatic, isotropic, linear-elastic materials.
+- **Transport vs. reasoning.** Two GLM 5.3 Flash trials (task 5) hit the 420 s read timeout and are recorded as adapter errors, not reasoning failures. Its task-5 column (0/3) therefore mixes one graded failure with two harness timeouts; the headline pass rate for that model should be read with that in mind.
+- **Snapshot, not a leaderboard.** These are 3 trials per task on one endpoint at one point in time. Model versions change behind the same id; re-run `experiments/run_experiment.py --trials 3` to refresh rather than quoting this table indefinitely.
 
 ---
 
