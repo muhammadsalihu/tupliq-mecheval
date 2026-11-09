@@ -18,10 +18,10 @@ Aggregated from the trial records in `results/raw/` — pass rate = trials passe
 
 | Model | Trials | Passed | Pass rate | pass@k | pass^k | Mean score | Mean latency (s) | Cost (USD) |
 |---|---|---|---|---|---|---|---|---|
-| `anthropic-claude-haiku-5.5` | 15 | 9 | 60.0% | 60.0% | 60.0% | 82.1% | 8.3 | $0.0146 |
-| `deepseek-deepseek-v4.1-flash` | 15 | 9 | 60.0% | 60.0% | 60.0% | 82.1% | 67.4 | $0.0563 |
-| `openai-gpt-6-luna` | 15 | 9 | 60.0% | 60.0% | 60.0% | 80.7% | 9.2 | $0.0073 |
-| `z-ai-glm-5.3-flash` | 15 | 5 | 33.3% | 40.0% | 20.0% | 66.3% | 101.3 | $0.0393 |
+| `anthropic/claude-haiku-5.5` | 15 | 9 | 60.0% | 60.0% | 60.0% | 82.1% | 8.3 | $0.0146 |
+| `deepseek/deepseek-v4.1-flash` | 15 | 9 | 60.0% | 60.0% | 60.0% | 82.1% | 67.4 | $0.0563 |
+| `openai/gpt-6-luna` | 15 | 9 | 60.0% | 60.0% | 60.0% | 80.7% | 9.2 | $0.0073 |
+| `z-ai/glm-5.3-flash` | 15 | 5 | 33.3% | 40.0% | 20.0% | 66.3% | 101.3 | $0.0393 |
 
 ## Per-task results
 

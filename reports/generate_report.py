@@ -107,6 +107,8 @@ def build_report() -> str:
     for name, records in raw.items():
         if not records:
             continue
+        # Raw files are named with the id flattened for the filesystem; show the real id.
+        display = next((m for m in env.get("models", []) if m.replace("/", "-") == name), name)
         n = len(records)
         passed = sum(1 for rec in records if rec.get("all_passed"))
         by_task = defaultdict(list)
@@ -118,7 +120,7 @@ def build_report() -> str:
         mean_lat = sum(float(rec.get("latency_seconds") or 0.0) for rec in records) / n
         cost = sum(float(rec.get("estimated_cost_usd") or 0.0) for rec in records)
         lines.append(
-            f"| `{name}` | {n} | {passed} | {passed / n * 100:.1f}% | {at_least_one * 100:.1f}% "
+            f"| `{display}` | {n} | {passed} | {passed / n * 100:.1f}% | {at_least_one * 100:.1f}% "
             f"| {all_pass * 100:.1f}% | {mean_score * 100:.1f}% | {mean_lat:.1f} | ${cost:.4f} |"
         )
     lines.append("")
