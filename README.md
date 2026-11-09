@@ -144,10 +144,15 @@ python experiments/run_experiment.py --models deepseek-4.1-flash --trials 3
 
 ## 10. Models & Configurations Tested
 Evaluated live via OpenRouter (`https://openrouter.ai/api/v1`), temperature = 0.2, 3 trials per task, timeout = 60 s:
-- **GPT-6 Luna** (`gpt-6-luna`)
-- **DeepSeek 4.1 Flash** (`deepseek-4.1-flash`)
-- **GLM 5.3 Flash** (`glm-5.3-flash`)
-- **Haiku 5.5** (`haiku-5.5` — cheapest Claude-class model at evaluation time)
+- **GPT-6 Luna** — `openai/gpt-6-luna` (short name `gpt-6-luna`)
+- **DeepSeek 4.1 Flash** — `deepseek/deepseek-v4.1-flash` (short name `deepseek-4.1-flash`)
+- **GLM 5.3 Flash** — `z-ai/glm-5.3-flash` (short name `glm-5.3-flash`)
+- **Haiku 5.5** — `anthropic/claude-haiku-5.5` (short name `haiku-5.5` — cheapest Claude-class model at evaluation time)
+
+Short names resolve to the slugs above through `evaluator/model_registry.py`. Every slug is
+checked against OpenRouter's catalogue before a run starts (`python experiments/run_experiment.py
+--validate-models`, no API key needed); a slug the provider does not serve — or one it rejects at
+request time — aborts the run instead of being scored as the model failing the task.
 
 ---
 

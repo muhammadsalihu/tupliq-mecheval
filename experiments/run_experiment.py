@@ -19,17 +19,14 @@ from tasks.task_003_boundary.task import ProppedCantileverTask
 from tasks.task_004_thermal.task import ThermalExpansionGapTask
 from tasks.task_005_convergence.task import MeshConvergenceTask
 
-from evaluator.model_adapter import LiveAPIModelAdapter
+from evaluator.model_adapter import LiveAPIModelAdapter, ModelUnavailableError
 from evaluator.runner import BenchmarkRunner
 from evaluator.metrics import BenchmarkMetrics
+from evaluator.model_registry import ROSTER, resolve, validate_roster, UnknownModelError
 
-# Frontier cheap models evaluated live via OpenRouter (slugs resolved at run time).
-DEFAULT_MODELS = [
-    "gpt-6-luna",
-    "deepseek-4.1-flash",
-    "glm-5.3-flash",
-    "haiku-5.5",
-]
+# Frontier cheap models evaluated live via OpenRouter. Short names resolve through
+# evaluator.model_registry to fully-qualified, provider-prefixed OpenRouter slugs.
+DEFAULT_MODELS = list(ROSTER)
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
@@ -103,12 +100,37 @@ def main():
     parser.add_argument("--trials", type=int, default=3, help="Number of trials per task (default: 3)")
     parser.add_argument("--live", action="store_true", help="Run against live LLM API (required)", default=True)
     parser.add_argument("--models", type=str, default="all", help="Comma-separated model list, or 'all' for the default roster")
+    parser.add_argument("--validate-models", action="store_true",
+                        help="Resolve every slug against OpenRouter's catalogue and exit (no API key needed)")
+    parser.add_argument("--allow-unknown", action="store_true",
+                        help="Skip the catalogue preflight (an unknown slug otherwise aborts the run)")
     args = parser.parse_args()
 
     if args.models == "all":
         models_to_run = DEFAULT_MODELS
     else:
         models_to_run = [m.strip() for m in args.models.split(",") if m.strip()]
+
+    # Short name -> provider-prefixed OpenRouter slug. A typo aborts here, never mid-run.
+    try:
+        resolved = [resolve(m) for m in models_to_run]
+    except UnknownModelError as exc:
+        print(f"[!] {exc}")
+        sys.exit(2)
+    for short, slug in zip(models_to_run, resolved):
+        print(f"[i] model '{short}' -> '{slug}'")
+
+    unknown = validate_roster(resolved)
+    if unknown:
+        print(f"[!] Not in OpenRouter's catalogue: {unknown}")
+        if not args.allow_unknown:
+            print("[!] Aborting before spending tokens. Fix the slug or pass --allow-unknown.")
+            sys.exit(2)
+    else:
+        print("[+] All slugs present in OpenRouter's catalogue.")
+    if args.validate_models:
+        return
+    models_to_run = resolved
 
     summaries = []
     combined_rows = []

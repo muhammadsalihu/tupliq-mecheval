@@ -62,6 +62,10 @@ def extract_json_from_response(text: str) -> Optional[Dict[str, Any]]:
     return None
 
 
+class ModelUnavailableError(RuntimeError):
+    """The provider rejected the configured model slug: stop the run, never score it as a failure."""
+
+
 class BaseModelAdapter:
     def __init__(self, model_name: str):
         self.model_name = model_name
@@ -112,11 +116,19 @@ class LiveAPIModelAdapter(BaseModelAdapter):
             )
             elapsed = time.time() - start_time
             if resp.status_code != 200:
+                body = resp.text
+                # A rejected slug must stop the run: scoring it as "the model failed every task"
+                # is silently wrong results, not an error the caller can see.
+                if resp.status_code in (400, 404) and "model" in body.lower():
+                    raise ModelUnavailableError(
+                        f"OpenRouter rejected model '{self.model_name}' "
+                        f"(HTTP {resp.status_code}): {body[:300]}"
+                    )
                 return ModelResponse(
                     model_name=self.model_name,
-                    raw_text=resp.text,
+                    raw_text=body,
                     latency_seconds=elapsed,
-                    error=f"API Error {resp.status_code}: {resp.text}",
+                    error=f"API Error {resp.status_code}: {body}",
                 )
 
             data = resp.json()
@@ -140,6 +152,8 @@ class LiveAPIModelAdapter(BaseModelAdapter):
                 completion_tokens=completion_tokens,
                 estimated_cost_usd=cost,
             )
+        except ModelUnavailableError:
+            raise
         except Exception as e:
             return ModelResponse(
                 model_name=self.model_name,
