@@ -9,7 +9,19 @@
 
 ---
 
+## Demo video
+
+**[Watch the MechEval walkthrough →](https://youtu.be/9wNIa13TxZU)** — https://youtu.be/9wNIa13TxZU
+
+2:23, narrated. It walks the five tasks, the live model roster, the measured results and the
+failure modes the graders recorded, and ends with the exact reproduction commands. Every figure
+shown in it is read from the run's own `results/raw/*.json`, so the video cannot quote a model or a
+number the run did not produce.
+
+---
+
 ## Table of Contents
+0. [Demo video](#demo-video)
 1. [Overview & Motivation](#1-overview--motivation)
 2. [Target Audience & Engineering Importance](#2-target-audience--engineering-importance)
 3. [Core Engineering Hypotheses & Failure Modes](#3-core-engineering-hypotheses--failure-modes)
