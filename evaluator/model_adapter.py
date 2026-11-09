@@ -76,19 +76,29 @@ class BaseModelAdapter:
 
 class LiveAPIModelAdapter(BaseModelAdapter):
     """
-    Calls OpenAI / OpenRouter / compatible ChatCompletions endpoint using API key.
+    Calls an OpenAI-compatible ChatCompletions endpoint (OpenRouter, the Nous portal, ...).
     """
+    #: Fallback price per 1M tokens for an endpoint that publishes no pricing for the model.
+    DEFAULT_PRICING_PER_M = (2.50, 10.00)
+
     def __init__(
         self,
         model_name: str,
         api_key: Optional[str] = None,
         base_url: str = "https://api.openai.com/v1",
+        pricing: Optional[Dict[str, tuple]] = None,
     ):
         super().__init__(model_name)
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY")
-        self.base_url = os.getenv("OPENAI_BASE_URL", base_url).rstrip("/")
+        self.api_key = api_key or os.getenv("MECHEVAL_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY")
+        self.base_url = os.getenv("MECHEVAL_BASE_URL", os.getenv("OPENAI_BASE_URL", base_url)).rstrip("/")
+        # model id -> (prompt $/token, completion $/token), from the endpoint's own catalogue.
+        self.pricing = dict(pricing or {})
 
-    def generate(self, prompt: str, temperature: float = 0.2, timeout: int = 60) -> ModelResponse:
+    def generate(self, prompt: str, temperature: float = 0.2, timeout: Optional[int] = None) -> ModelResponse:
+        # Reasoning-class models routinely need >60 s for a 5-part JSON deliverable; the read
+        # timeout is generous by default and overridable per run (MECHEVAL_TIMEOUT).
+        if timeout is None:
+            timeout = int(os.getenv("MECHEVAL_TIMEOUT", "300"))
         if not self.api_key:
             return ModelResponse(
                 model_name=self.model_name,
@@ -112,7 +122,7 @@ class LiveAPIModelAdapter(BaseModelAdapter):
                 f"{self.base_url}/chat/completions",
                 headers=headers,
                 json=payload,
-                timeout=timeout,
+                timeout=(15, timeout),
             )
             elapsed = time.time() - start_time
             if resp.status_code != 200:
@@ -137,8 +147,13 @@ class LiveAPIModelAdapter(BaseModelAdapter):
             prompt_tokens = usage.get("prompt_tokens", 0)
             completion_tokens = usage.get("completion_tokens", 0)
 
-            # Approximate cost estimate ($2.50 / 1M prompt, $10.00 / 1M completion)
-            cost = (prompt_tokens * 2.50 + completion_tokens * 10.00) / 1e6
+            # Real price for this model at the endpoint actually called; the fallback is only a
+            # placeholder for endpoints that publish no pricing (the report must say which it is).
+            p_in, p_out = self.pricing.get(
+                self.model_name,
+                tuple(rate / 1e6 for rate in self.DEFAULT_PRICING_PER_M),
+            )
+            cost = prompt_tokens * p_in + completion_tokens * p_out
 
             parsed = extract_json_from_response(content)
 

@@ -13,6 +13,15 @@ import matplotlib.pyplot as plt
 # Ensure root dir in path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+# Optional .env support (python-dotenv is in requirements.txt) so the API key can live in .env
+# instead of the shell. Absent package or absent file is fine — the environment still works.
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except Exception:
+    pass
+
 from tasks.task_001_cantilever.task import CantileverBeamTask
 from tasks.task_002_axial.task import SteppedAxialBarTask
 from tasks.task_003_boundary.task import ProppedCantileverTask
@@ -22,10 +31,13 @@ from tasks.task_005_convergence.task import MeshConvergenceTask
 from evaluator.model_adapter import LiveAPIModelAdapter, ModelUnavailableError
 from evaluator.runner import BenchmarkRunner
 from evaluator.metrics import BenchmarkMetrics
-from evaluator.model_registry import ROSTER, resolve, validate_roster, UnknownModelError
+from evaluator.model_registry import (
+    ROSTER, resolve, validate_roster, UnknownModelError,
+    base_url, models_url, fetch_catalogue, pricing_map,
+)
 
-# Frontier cheap models evaluated live via OpenRouter. Short names resolve through
-# evaluator.model_registry to fully-qualified, provider-prefixed OpenRouter slugs.
+# Frontier cheap models evaluated live. Short names resolve through evaluator.model_registry to
+# fully-qualified model ids; the endpoint and its catalogue come from the environment.
 DEFAULT_MODELS = list(ROSTER)
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
@@ -41,7 +53,7 @@ def get_all_tasks():
     ]
 
 
-def run_benchmark_for_model(model_name: str, num_trials: int = 3, use_live_api: bool = True):
+def run_benchmark_for_model(model_name: str, num_trials: int = 3, use_live_api: bool = True, pricing: dict | None = None):
     tasks = get_all_tasks()
 
     if not use_live_api:
@@ -49,7 +61,7 @@ def run_benchmark_for_model(model_name: str, num_trials: int = 3, use_live_api: 
             "Replayed/hand-written trial data is no longer supported. "
             "MechEval results must come from real API runs (--live)."
         )
-    adapter = LiveAPIModelAdapter(model_name=model_name, base_url=OPENROUTER_BASE_URL)
+    adapter = LiveAPIModelAdapter(model_name=model_name, base_url=base_url(), pricing=pricing)
 
     runner = BenchmarkRunner(
         tasks=tasks,
@@ -137,12 +149,18 @@ def main():
 
     print("\n" + "="*70)
     print("MECHEVAL: MECHANICAL ENGINEERING AI EVALUATION BENCHMARK")
+    print(f"Endpoint: {base_url()}")
     print(f"Executing {len(models_to_run)} model(s) across 5 engineering tasks, {args.trials} trials each.")
     print("="*70 + "\n")
 
+    # The endpoint's own catalogue: proves the ids exist and supplies the prices the cost column uses.
+    catalogue = fetch_catalogue()
+    prices = pricing_map(catalogue)
+
     for model_name in models_to_run:
         print(f"[*] Evaluating Model: {model_name}...")
-        summary = run_benchmark_for_model(model_name, num_trials=args.trials, use_live_api=args.live)
+        summary = run_benchmark_for_model(model_name, num_trials=args.trials, use_live_api=args.live,
+                                          pricing=prices)
         summaries.append(summary)
 
         df = BenchmarkMetrics.to_dataframe(summary["task_breakdown"])
@@ -170,6 +188,25 @@ def main():
     print("="*70)
     print(full_df.to_string(index=False))
     print("="*70 + "\n")
+
+    # Provenance for the results: which endpoint and roster produced this file, so a reader never
+    # has to guess (and so a stale results set is detectable).
+    import json as _json
+    from evaluator.model_registry import label_for
+    meta = {
+        "endpoint": base_url(),
+        "catalogue_url": models_url(),
+        "models": models_to_run,
+        "labels": {m: label_for(m) for m in models_to_run},
+        "trials_per_task": args.trials,
+        "tasks": [t["task_id"] for t in summaries[0]["task_breakdown"]] if summaries else [],
+        "pricing_usd_per_token": {m: prices.get(m) for m in models_to_run},
+        "generated_at_utc": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
+    }
+    os.makedirs("results", exist_ok=True)
+    with open("results/run_environment.json", "w", encoding="utf-8") as fh:
+        _json.dump(meta, fh, indent=2)
+    print(f"[+] Run provenance written to results/run_environment.json (endpoint {meta['endpoint']})")
 
 
 if __name__ == "__main__":

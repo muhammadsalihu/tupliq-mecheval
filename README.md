@@ -133,7 +133,7 @@ Copy `.env.example` to `.env` and set your `OPENROUTER_API_KEY`, then:
 ```bash
 python experiments/run_experiment.py --trials 3
 ```
-This executes the full live evaluation across the default model roster (GPT-6 Luna, DeepSeek 4.1 Flash, GLM 5.3 Flash, Haiku 5.5 via OpenRouter), computes pass@3 and pass^3, saves transcripts in `transcripts/`, CSV summaries in `results/summary.csv`, and visualization charts in `results/benchmark_comparison.png`.
+This executes the full live evaluation across the default model roster (GPT-6 Luna, DeepSeek 4.1 Flash, GLM 5.3 Flash, Haiku 5.5), computes pass@3 and pass^3, saves transcripts in `transcripts/`, CSV summaries in `results/summary.csv`, and visualization charts in `results/comparison.png`. The endpoint is the OpenAI-compatible base URL in `MECHEVAL_BASE_URL` (default `https://openrouter.ai/api/v1`); every run writes the endpoint, roster and prices it used to `results/run_environment.json`.
 
 ### 3. Run a Single Model
 ```bash

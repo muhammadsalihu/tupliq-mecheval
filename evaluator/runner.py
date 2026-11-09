@@ -15,6 +15,11 @@ from graders.simulation_grader import GradingReport
 from evaluator.model_adapter import BaseModelAdapter, ModelResponse
 
 
+def _slug_for_path(model_name: str) -> str:
+    """Model ids are provider-prefixed ('openai/gpt-6-luna'): a '/' would nest a path, so flatten it."""
+    return (model_name or "model").replace("/", "-")
+
+
 class TrialRecord(BaseModel):
     task_id: str
     task_title: str
@@ -104,7 +109,7 @@ class BenchmarkRunner:
         )
 
         # Save formatted transcript
-        transcript_filename = f"{self.adapter.model_name}_{task.task_id}_trial_{trial_index + 1}.md"
+        transcript_filename = f"{_slug_for_path(self.adapter.model_name)}_{task.task_id}_trial_{trial_index + 1}.md"
         transcript_path = os.path.join(self.transcripts_dir, transcript_filename)
         with open(transcript_path, "w", encoding="utf-8") as f:
             f.write(f"# MechEval Transcript\n")
@@ -135,7 +140,7 @@ class BenchmarkRunner:
                 all_records.append(record)
 
         # Save raw JSON results
-        output_file = os.path.join(self.results_dir, f"{self.adapter.model_name}_raw_results.json")
+        output_file = os.path.join(self.results_dir, f"{_slug_for_path(self.adapter.model_name)}_raw_results.json")
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump([r.model_dump() for r in all_records], f, indent=2)
 
