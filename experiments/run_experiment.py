@@ -19,10 +19,19 @@ from tasks.task_003_boundary.task import ProppedCantileverTask
 from tasks.task_004_thermal.task import ThermalExpansionGapTask
 from tasks.task_005_convergence.task import MeshConvergenceTask
 
-from evaluator.model_adapter import OfflineReplayModelAdapter, LiveAPIModelAdapter
-from evaluator.recorded_trials import GPT4O_TRIALS, CLAUDE35_TRIALS
+from evaluator.model_adapter import LiveAPIModelAdapter
 from evaluator.runner import BenchmarkRunner
 from evaluator.metrics import BenchmarkMetrics
+
+# Frontier cheap models evaluated live via OpenRouter (slugs resolved at run time).
+DEFAULT_MODELS = [
+    "gpt-6-luna",
+    "deepseek-4.1-flash",
+    "glm-5.3-flash",
+    "haiku-5.5",
+]
+
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 
 def get_all_tasks():
@@ -35,20 +44,15 @@ def get_all_tasks():
     ]
 
 
-def run_benchmark_for_model(model_name: str, num_trials: int = 3, use_live_api: bool = False):
+def run_benchmark_for_model(model_name: str, num_trials: int = 3, use_live_api: bool = True):
     tasks = get_all_tasks()
 
-    if use_live_api:
-        adapter = LiveAPIModelAdapter(model_name=model_name)
-    else:
-        # Use recorded real empirical trials
-        if "claude" in model_name.lower():
-            trials_data = CLAUDE35_TRIALS
-            clean_name = "claude-3-5-sonnet"
-        else:
-            trials_data = GPT4O_TRIALS
-            clean_name = "gpt-4o"
-        adapter = OfflineReplayModelAdapter(model_name=clean_name, trial_records=trials_data)
+    if not use_live_api:
+        raise ValueError(
+            "Replayed/hand-written trial data is no longer supported. "
+            "MechEval results must come from real API runs (--live)."
+        )
+    adapter = LiveAPIModelAdapter(model_name=model_name, base_url=OPENROUTER_BASE_URL)
 
     runner = BenchmarkRunner(
         tasks=tasks,
@@ -97,11 +101,14 @@ def generate_benchmark_charts(summaries: list, output_image_path: str = "results
 def main():
     parser = argparse.ArgumentParser(description="MechEval AI Mechanical Engineering Benchmark Runner")
     parser.add_argument("--trials", type=int, default=3, help="Number of trials per task (default: 3)")
-    parser.add_argument("--live", action="store_true", help="Run against live LLM API instead of reproducible offline trials")
-    parser.add_argument("--model", type=str, default="all", help="Model to evaluate (gpt-4o, claude-3-5-sonnet, or all)")
+    parser.add_argument("--live", action="store_true", help="Run against live LLM API (required)", default=True)
+    parser.add_argument("--models", type=str, default="all", help="Comma-separated model list, or 'all' for the default roster")
     args = parser.parse_args()
 
-    models_to_run = ["gpt-4o", "claude-3-5-sonnet"] if args.model == "all" else [args.model]
+    if args.models == "all":
+        models_to_run = DEFAULT_MODELS
+    else:
+        models_to_run = [m.strip() for m in args.models.split(",") if m.strip()]
 
     summaries = []
     combined_rows = []

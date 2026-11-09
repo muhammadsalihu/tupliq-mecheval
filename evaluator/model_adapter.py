@@ -7,7 +7,7 @@ import json
 import re
 import time
 import os
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 from pydantic import BaseModel, Field
 import requests
 
@@ -149,51 +149,4 @@ class LiveAPIModelAdapter(BaseModelAdapter):
             )
 
 
-class OfflineReplayModelAdapter(BaseModelAdapter):
-    """
-    Deterministic offline model adapter providing genuine empirical trial responses
-    from real frontier models (e.g. GPT-4o, Claude 3.5 Sonnet, Llama-3-70B).
-    Allows 100% reproducible zero-cost benchmarking without live credentials.
-    """
-    def __init__(self, model_name: str, trial_records: Dict[str, List[str]]):
-        super().__init__(model_name)
-        self.trial_records = trial_records
-        self.counters: Dict[str, int] = {}
 
-    def generate(self, prompt: str, temperature: float = 0.2, timeout: int = 60) -> ModelResponse:
-        # Identify task from prompt
-        task_id = "unknown"
-        if "cantilever" in prompt.lower() or "task_001" in prompt.lower():
-            task_id = "task_001_cantilever"
-        elif "stepped" in prompt.lower() or "task_002" in prompt.lower():
-            task_id = "task_002_axial"
-        elif "propped cantilever" in prompt.lower() or "statically indeterminate" in prompt.lower():
-            task_id = "task_003_boundary"
-        elif "thermal expansion" in prompt.lower() or "clearance gap" in prompt.lower():
-            task_id = "task_004_thermal"
-        elif "mesh convergence" in prompt.lower() or "richardson" in prompt.lower():
-            task_id = "task_005_convergence"
-
-        records = self.trial_records.get(task_id, ["{}"])
-        idx = self.counters.get(task_id, 0) % len(records)
-        self.counters[task_id] = idx + 1
-
-        raw_text = records[idx]
-        parsed = extract_json_from_response(raw_text)
-
-        # Realistic simulated metrics
-        latency = 1.25 + 0.15 * idx
-        prompt_tokens = len(prompt) // 4
-        completion_tokens = len(raw_text) // 4
-        cost = (prompt_tokens * 2.50 + completion_tokens * 10.00) / 1e6
-
-        return ModelResponse(
-            model_name=self.model_name,
-            raw_text=raw_text,
-            parsed_json=parsed,
-            parse_success=(parsed is not None),
-            latency_seconds=latency,
-            prompt_tokens=prompt_tokens,
-            completion_tokens=completion_tokens,
-            estimated_cost_usd=cost,
-        )

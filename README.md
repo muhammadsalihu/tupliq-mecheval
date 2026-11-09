@@ -30,7 +30,7 @@
 ---
 
 ## 1. Overview & Motivation
-Frontier AI models (GPT-4o, Claude 3.5 Sonnet, etc.) can rapidly generate plausible-looking engineering derivations. However, in safety-critical physical systems (civil infrastructure, aerospace airframes, high-pressure piping, and machinery), a calculation that looks convincing but is physically invalid can cause structural collapse and catastrophic failure.
+Frontier AI models can rapidly generate plausible-looking engineering derivations. However, in safety-critical physical systems (civil infrastructure, aerospace airframes, high-pressure piping, and machinery), a calculation that looks convincing but is physically invalid can cause structural collapse and catastrophic failure. Related work on LLM-assisted simulation setup — Shafiq, Ghiassi & Alexiadis, *"The Power of Small LLMs in Geometry Generation for Physical Simulations"* (University of Birmingham) — shows LLMs can generate GMSH simulation inputs, which raises the complementary question MechEval answers: can these models be trusted to get the physics of the inputs *right*?
 
 **MechEval** tests whether AI models can solve genuine, practical mechanical engineering problems involving:
 - Superposition of multiple loads and self-weight dead load.
@@ -111,8 +111,8 @@ Every grader in MechEval operates deterministically using code-based grading (`g
 
 ### Quick Setup with uv:
 ```bash
-git clone https://github.com/your-username/mecheval.git
-cd mecheval
+git clone https://github.com/muhammadsalihu/tupliq-mecheval.git
+cd tupliq-mecheval
 uv venv --python 3.11
 .venv\Scripts\activate   # On Windows (or 'source .venv/bin/activate' on Linux/macOS)
 uv pip install -r requirements.txt
@@ -129,48 +129,41 @@ pytest -v
 *Expected result: 33 passed in ~2.5s.*
 
 ### 2. Run Reproducible Benchmark Across Models (Default 3 Trials Each)
+Copy `.env.example` to `.env` and set your `OPENROUTER_API_KEY`, then:
 ```bash
-python experiments/run_experiment.py
+python experiments/run_experiment.py --trials 3
 ```
-This executes the full evaluation across GPT-4o and Claude 3.5 Sonnet, computes pass@3 and pass^3, saves transcripts in `transcripts/`, CSV summaries in `results/summary.csv`, and visualization charts in `results/benchmark_comparison.png`.
+This executes the full live evaluation across the default model roster (GPT-6 Luna, DeepSeek 4.1 Flash, GLM 5.3 Flash, Haiku 5.5 via OpenRouter), computes pass@3 and pass^3, saves transcripts in `transcripts/`, CSV summaries in `results/summary.csv`, and visualization charts in `results/benchmark_comparison.png`.
 
-### 3. Run Live Evaluation (Optional with API Key)
-Copy `.env.example` to `.env` and set your `OPENAI_API_KEY`:
+### 3. Run a Single Model
 ```bash
-python experiments/run_experiment.py --live --model gpt-4o --trials 3
+python experiments/run_experiment.py --models deepseek-4.1-flash --trials 3
 ```
 
 ---
 
 ## 10. Models & Configurations Tested
-- **GPT-4o** (`gpt-4o-2024-08-06` / frontier multimodal model)
-- **Claude 3.5 Sonnet** (`claude-3-5-sonnet-20241022` / frontier reasoning model)
-- **Evaluation Settings**: Temperature = 0.2, 3 trials per task, timeout = 60s.
+Evaluated live via OpenRouter (`https://openrouter.ai/api/v1`), temperature = 0.2, 3 trials per task, timeout = 60 s:
+- **GPT-6 Luna** (`gpt-6-luna`)
+- **DeepSeek 4.1 Flash** (`deepseek-4.1-flash`)
+- **GLM 5.3 Flash** (`glm-5.3-flash`)
+- **Haiku 5.5** (`haiku-5.5` — cheapest Claude-class model at evaluation time)
 
 ---
 
 ## 11. Empirical Results Summary
-
-| Model | Overall Pass Rate | pass@3 | pass^3 | Mean Score | Key Failure Mode Observed |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **GPT-4o** | **53.3%** | **80.0%** | **0.0%** | 70.7% | Statically indeterminate reactions (0% pass), dropped dead load |
-| **Claude 3.5 Sonnet** | **53.3%** | **80.0%** | **0.0%** | 79.4% | Statically indeterminate reactions (0% pass), rigid gap penetration |
-
-![Benchmark Comparison](results/benchmark_comparison.png)
+> **Pending re-run:** results are being regenerated from live API trials with the models in Section 10. The previous table (GPT-4o / Claude 3.5 Sonnet) has been retired and must not be cited. This section is updated by `experiments/run_experiment.py` output and `reports/benchmark_report.md`.
 
 ---
 
 ## 12. In-Depth Performance Analysis
-- **The Consistency Illusion**: Models achieve $\text{pass@}3 = 80.0\%$ (succeeding at least once across 3 attempts on 4 of the 5 tasks), but their $\text{pass}^3$ is **0.0%**. A model might solve a cantilever beam correctly in Trial 1, but in Trial 2 it completely forgets self-weight!
-- **Catastrophic Indeterminacy Failure**: On Task 3 (propped cantilever), both models exhibited a 0% pass rate across all trials. They routinely guessed symmetric 50/50 reaction forces ($24$ kN each) instead of the true $30$ kN ($62.5\%$) and $18$ kN ($37.5\%$) values dictated by deformation compatibility.
-- **Boundary Penetration**: In Task 4, models allowed the expanding bar to physically penetrate the rigid stop, reporting actual elongation equal to unconstrained growth.
+> **Pending re-run** with the Section 10 roster. The analysis below is rewritten from the new trial transcripts once `python experiments/run_experiment.py --trials 3` completes.
 
 ---
 
 ## 13. Runtime and Inference Cost
-- **Benchmark Runtime**: ~21 seconds total for all 30 evaluations.
-- **Inference Cost**: Less than **$0.05 USD** total for the entire evaluation run.
-- **Resource Footprint**: Lightweight, deterministic, runnable on standard laptop CPU without GPU requirements.
+- **Benchmark Runtime**: roughly 2–5 minutes for all live API trials (60 s per-request timeout).
+- **Inference Cost**: with the Section 10 flash-class roster, well under **$1 USD** for the full 3-trial run (tracked per-request by the runner and reported in `results/summary.csv`).
 
 ---
 
@@ -182,6 +175,7 @@ python experiments/run_experiment.py --live --model gpt-4o --trials 3
 
 ## 15. Data Sources & Licensing
 - All equations and problem formulations are derived from standard, unencumbered classical mechanics textbooks (Euler-Bernoulli beam theory, Hooke's Law, ASME V&V 20 Standards).
+- Task 5 (mesh convergence / geometry-to-GMSH verification) is motivated by recent work on LLM-assisted simulation setup: **Shafiq, O., Ghiassi, B., & Alexiadis, A. — "The Power of Small LLMs in Geometry Generation for Physical Simulations"** (University of Birmingham), which demonstrates LoRA fine-tuned small LLMs (Phi-3 Mini, Qwen-2.5 1.5B) generating precise GMSH engineering geometries and outperforming GPT-4o on this specialized task. MechEval complements that line of work by measuring whether general frontier models can verify — not just generate — simulation inputs against physical ground truths.
 - Codebase is released under the **MIT License**.
 
 ---
